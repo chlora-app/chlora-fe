@@ -10,42 +10,42 @@ import {
 const MenuRoutes = [
     {
         path: "/app001/dashboard",
-        text: "Dashboard",
+        title: "Dashboard",
         icon: LayoutDashboard,
         component: LazyLoadRoutes(() => import("../pages/app001/Dashboard")),
         section: "main"
     },
     {
-        text: "Master Data",
+        title: "Master Data",
         icon: Layers,
         section: "main",
         sub: [
-            { path: "/app002/master/users", text: "Master User", component: LazyLoadRoutes(() => import("../pages/app002/MasterUser")) },
-            { path: "/app003/master/clusters", text: "Master Cluster", component: LazyLoadRoutes(() => import("../pages/app003/MasterCluster")) },
-            { path: "/app004/master/devices", text: "Master Device", component: LazyLoadRoutes(() => import("../pages/app004/MasterDevice")) },
+            { path: "/app002/master/users", title: "Master User", component: LazyLoadRoutes(() => import("../pages/app002/MasterUser")) },
+            { path: "/app003/master/clusters", title: "Master Cluster", component: LazyLoadRoutes(() => import("../pages/app003/MasterCluster")) },
+            { path: "/app004/master/devices", title: "Master Device", component: LazyLoadRoutes(() => import("../pages/app004/MasterDevice")) },
         ],
     },
     {
-        text: "Reports",
+        title: "Reports",
         icon: ClipboardList,
         section: "main",
         sub: [
-            { path: "/reports/table", text: "Table Report", component: LazyLoadRoutes(() => import("../pages/app002/MasterUser")), },
-            { path: "/reports/graph", text: "Graph Report", component: LazyLoadRoutes(() => import("../pages/app002/MasterUser")), },
+            { path: "/reports/table", title: "Table Report", component: LazyLoadRoutes(() => import("../pages/app002/MasterUser")), },
+            { path: "/reports/graph", title: "Graph Report", component: LazyLoadRoutes(() => import("../pages/app002/MasterUser")), },
         ],
     },
     {
-        text: "Support",
+        title: "Support",
         path: "/support",
         icon: Headset,
-        section: "footer",
+        section: "others",
         component: LazyLoadRoutes(() => import("../pages/app002/MasterUser")),
     },
     {
-        text: "About",
+        title: "About",
         path: "/about",
         icon: CircleAlert,
-        section: "footer",
+        section: "others",
         component: LazyLoadRoutes(() => import("../pages/app002/MasterUser")),
     },
 
