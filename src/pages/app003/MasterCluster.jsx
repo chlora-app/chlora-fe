@@ -303,7 +303,7 @@ const MasterCluster = () => {
                         </Stack>
 
                         <Stack >
-                            <TableCustom
+                            {/* <TableCustom
                                 keyField="cluster_id"
                                 loadingData={loadingData}
                                 columns={app003ClusterColumns}
@@ -321,7 +321,7 @@ const MasterCluster = () => {
                                 onPageChange={handleChangePage}
                                 onRowsPerPageChange={handleChangeRowsPerPage}
                                 onRequestSort={handleRequestSort}
-                            />
+                            /> */}
                         </Stack>
 
                     </Box>

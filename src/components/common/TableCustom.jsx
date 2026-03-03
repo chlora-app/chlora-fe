@@ -250,7 +250,7 @@ const TableCustom = (props) => {
 
     return (
         <>
-            <TableContainer
+            {/* <TableContainer
                 sx={{
                     borderRadius: '10px',
                     border: '1px solid',
@@ -287,7 +287,7 @@ const TableCustom = (props) => {
                         {bodyRows}
                     </TableBody>
                 </Table>
-            </TableContainer>
+            </TableContainer> */}
 
             {/* FOOTER SECTION */}
             <Stack direction={{ sm: 'column', md: 'row' }} justifyContent={{ xs: 'center', md: 'space-between' }} mt={2} spacing={1} alignItems={"center"}>

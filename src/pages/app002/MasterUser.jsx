@@ -13,7 +13,7 @@ import {
     IconButton,
     Stack,
     Tooltip,
-    Button,
+    // Button,
     Tab,
     Tabs,
     Paper,
@@ -33,6 +33,7 @@ import {
     ReplayOutlinedIcon,
     SearchIcon
 } from "../../assets/Icon/muiIcon";
+import { Button } from "@/components/ui/button";
 
 const MasterUser = () => {
     const theme = useTheme();
@@ -537,7 +538,7 @@ const MasterUser = () => {
                 msgStateGetStatus={app002MsgStatus}
                 setFirstRender={setFirstRender}
                 title="Users Management"
-                icon={<PersonIcon fontSize="medium"/>}
+                icon={<PersonIcon fontSize="medium" />}
                 breadCrumbItems={breadCrumbItems}
                 isMobile={isMobile}
             >
@@ -629,13 +630,9 @@ const MasterUser = () => {
                                 >
                                     {active !== "deletedUser" && (
                                         <Button
-                                            variant="contained"
-                                            color="primary"
-                                            onClick={handleModalAddOpen}
-                                            fullWidth={isMobile ? true : false}
-                                            startIcon={<AddIcon fontSize="small" />}
-                                            sx={{ px: !isMobile ? 4 : 0 }}
-                                        >
+                                            size="sm"
+                                            variant="outline"
+                                            onClick={handleModalAddOpen}>
                                             Add
                                         </Button>
                                     )}
@@ -644,7 +641,7 @@ const MasterUser = () => {
                         </Stack>
 
                         <Stack>
-                            {active === "activeUser" && (
+                            {/* {active === "activeUser" && (
                                 <TableCustom
                                     keyField="user_id"
                                     loadingData={loadingData}
@@ -661,9 +658,9 @@ const MasterUser = () => {
                                     onRowsPerPageChange={handleChangeRowsPerPage}
                                     onRequestSort={handleRequestSort}
                                 />
-                            )}
+                            )} */}
 
-                            {active === "deletedUser" && (
+                            {/* {active === "deletedUser" && (
                                 <TableCustom
                                     keyField="user_id"
                                     loadingData={loadingData}
@@ -680,7 +677,7 @@ const MasterUser = () => {
                                     onRowsPerPageChange={handleChangeRowsPerPageDeleted}
                                     onRequestSort={handleRequestSortDeleted}
                                 />
-                            )}
+                            )} */}
 
                         </Stack>
                     </Box>

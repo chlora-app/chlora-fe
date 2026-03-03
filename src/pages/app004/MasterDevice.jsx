@@ -439,7 +439,7 @@ const MasterDevice = () => {
                         </Stack>
 
                         <Stack>
-                            <TableCustom
+                            {/* <TableCustom
                                 keyField="device_id"
                                 loadingData={loadingData}
                                 columns={app004DeviceColumns}
@@ -457,7 +457,7 @@ const MasterDevice = () => {
                                 onPageChange={handleChangePage}
                                 onRowsPerPageChange={handleChangeRowsPerPage}
                                 onRequestSort={handleRequestSort}
-                            />
+                            /> */}
                         </Stack>
                     </Box>
                 </Container>

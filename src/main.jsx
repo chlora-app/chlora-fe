@@ -1,44 +1,53 @@
 import React, { useMemo, useState } from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter } from "react-router-dom";
-import { CssBaseline, ThemeProvider } from "@mui/material";
 
 import App from "../src/App"
-import createAppTheme from './themes';
 import { AuthProvider } from './context/AuthContext';
+import "./index.css"
 
-import 'bootstrap/dist/css/bootstrap.min.css'
-import '@mdi/font/css/materialdesignicons.min.css';
-import '@fontsource/poppins/400.css';
-import '@fontsource/poppins/500.css';
-import '@fontsource/poppins/600.css';
-import '@fontsource/poppins/700.css';
-import './styles/index.scss'
-import { ThemeProviderCustom } from './context/ThemeContext';
+
+// ========= Migrate to Shadcn and Tailwind =========
+// import './styles/index.scss'
+// import { CssBaseline, ThemeProvider } from "@mui/material";
+// import createAppTheme from './themes';
+// import { ThemeProviderCustom } from './context/ThemeContext';
+// import 'bootstrap/dist/css/bootstrap.min.css'
+// import '@mdi/font/css/materialdesignicons.min.css';
+
 
 const Root = () => {
-  const [mode, setMode] = useState("dark");
+  const basename = import.meta.env.DEV ? "/chlora" : "/chlora"
+  const [mode, setMode] = useState("light");
 
-  const theme = useMemo(() =>
-    createAppTheme(mode),
-    [mode]);
+  // ========= Migrate to Shadcn and Tailwind =========
+  // const theme = useMemo(() =>
+  //   createAppTheme(mode),
+  //   [mode]);
 
   const toggleTheme = () => {
-    setMode(prev => (prev === "dark" ? "light" : "dark"))
+    setMode(prev => (prev === "dark" ? "light" : "dark"));
+    document.documentElement.classList.toggle("dark");
   }
 
-  // theme bug not undefined
   return (
-    <BrowserRouter basename="/chlora">
+    <BrowserRouter basename={basename}>
       <AuthProvider>
-        <ThemeProviderCustom>
+        <div className={mode}>
+          <App toggleTheme={toggleTheme} />
+        </div>
+
+        {/* // ========= Migrate to Shadcn and Tailwind ========= */}
+        {/* <ThemeProviderCustom>
           {(theme) => (
             <ThemeProvider theme={theme}>
               <CssBaseline />
               <App />
             </ThemeProvider>
           )}
-        </ThemeProviderCustom>
+        </ThemeProviderCustom> */}
+        {/* // ========= Migrate to Shadcn and Tailwind ========= */}
+
       </AuthProvider>
     </BrowserRouter>
   )
