@@ -29,6 +29,8 @@ import PageSpinner from "../../components/common/PageSpinner";
 import AlertAuthMessage from "../../components/common/AlertAuthMessage";
 import { useAuth } from "../../context/AuthContext";
 import { loginApi } from "../../utils/ListApi";
+import { InputGroup, InputGroupAddon, InputGroupInput } from "@/components/ui/input-group";
+import { EyeOffIcon, Lock, MailIcon } from "lucide-react";
 // import {
 //     MailOutlineOutlinedIcon,
 //     LockOutlinedIcon,
@@ -122,37 +124,51 @@ const LoginForm = ({ className, ...props }) => {
                             <Field>
                                 {/* Use InputGround for icon */}
                                 <FieldLabel htmlFor="email">Email or User ID</FieldLabel>
-                                <Input
-                                    id="username"
-                                    name="username"
-                                    type="text"
-                                    placeholder="Enter your email or user id"
-                                    value={formik.values.username}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
+                                <InputGroup>
+                                    <InputGroupAddon>
+                                        <MailIcon />
+                                    </InputGroupAddon>
+                                    <InputGroupInput
+                                        id="username"
+                                        name="username"
+                                        type="text"
+                                        placeholder="Enter your email or user id"
+                                        value={formik.values.username}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
 
-                                />
+                                    />
+                                </InputGroup>
+                                <FieldDescription>Use Formik touched.</FieldDescription>
+
                                 {/* Use Field Desc if button submit triggered and value still null */}
-                                {formik.touched.username && formik.errors.username && (
+                                {/* {formik.touched.username && formik.errors.username && (
                                     <p className="text-sm text-red-500">{formik.errors.username}</p>
-                                )}
+                                )} */}
+
+
+
                             </Field>
                             <Field>
                                 {/* Use InputGround for icon */}
                                 <FieldLabel htmlFor="password">Password</FieldLabel>
-                                <Input
-                                    id="password"
-                                    type="password"
-                                    placeholder="Enter your password"
-                                    value={formik.values.password}
-                                    onChange={formik.handleChange}
-                                    onBlur={formik.handleBlur}
-
-                                />
-                                {/* Use Field Desc if button submit triggered and value still null */}
-                                {formik.touched.password && formik.errors.password && (
-                                    <p className="text-sm text-red-500">{formik.errors.password}</p>
-                                )}
+                                <InputGroup>
+                                    <InputGroupAddon>
+                                        <Lock />
+                                    </InputGroupAddon>
+                                    <InputGroupInput
+                                        id="password"
+                                        type="password"
+                                        placeholder="Enter your password"
+                                        value={formik.values.password}
+                                        onChange={formik.handleChange}
+                                        onBlur={formik.handleBlur}
+                                    />
+                                    <InputGroupAddon align="inline-end">
+                                        <EyeOffIcon />
+                                    </InputGroupAddon>
+                                </InputGroup>
+                                <FieldDescription>Icon positioned at the end.</FieldDescription>
                             </Field>
                             <Field>
                                 <Button type="submit">Login</Button>
