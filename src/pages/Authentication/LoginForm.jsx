@@ -71,13 +71,13 @@ const LoginForm = ({ className, ...props }) => {
             } catch (error) {
                 setShowAlert(true)
                 if (error.response) {
-                    setMessage(error.response.data.message);
-                    toast.error("Event has been created", { position: "top-right"})
+                    toast.error(error.response.data.message, { position: 'top-right' });
+                    // toast.error("Event has been created", { position: "top-right"})
 
                 } else {
-                    setMessage("System is Unavailable. Please Try Again Later.");
-                    toast("Event has been created", { position: "top-left" })
-                }
+                    toast.error("System is Unavailable. Please Try Again Later.");
+                    // toast.error("Event has been created", { position: "top-left" })
+                }u
             } finally {
                 setSubmitting(false);
                 setLoadingSpinner(false);
