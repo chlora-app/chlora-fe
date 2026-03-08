@@ -62,13 +62,17 @@ const AuthLayout = (props) => {
                             orientation="vertical"
                             className="mr-2 data-[orientation=vertical]:h-4"
                         />
-                       <BreadcrumbCustom/>
+                        <BreadcrumbCustom />
                     </div>
                 </header>
+
+                <div>
+                    {props.children}
+                </div>
             </SidebarInset>
 
-          
-            
+
+
         </SidebarProvider>
 
 

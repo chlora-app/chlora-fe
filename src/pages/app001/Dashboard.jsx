@@ -11,7 +11,6 @@ import { DashboardIcon } from "../../assets/Icon/muiIcon";
 const Dashboard = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("sm")); // xs & sm
-    const breadCrumbItems = [{ label: "Home", path: "/" }, { label: "Master Data" }, { label: "Master User" }]
     const [firstRender, setFirstRender] = useState(false)
     const [app001p01Page, setApp001p01Page] = useState(true);
 
@@ -28,7 +27,6 @@ const Dashboard = () => {
                 setFirstRender={setFirstRender}
                 title="Dashboard"
                 icon={<DashboardIcon fontSize="small" />}
-                breadCrumbItems={breadCrumbItems}
                 isMobile={isMobile}
             >
                 <Container

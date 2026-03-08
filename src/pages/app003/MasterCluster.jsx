@@ -27,7 +27,6 @@ const MasterCluster = () => {
     // State First Page, Message, and Loading Effect
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-    const breadCrumbItems = [{ label: "Home", path: "/" }, { label: "Master Data" }, { label: "Master Cluster" }]
     const [firstRender, setFirstRender] = useState(false)
     const [app003p01Page, setApp003p01Page] = useState(true);
 
@@ -247,7 +246,6 @@ const MasterCluster = () => {
                 setFirstRender={setFirstRender}
                 title="Clusters Management"
                 icon={<DeviceHubIcon fontSize="medium" />}
-                breadCrumbItems={breadCrumbItems}
                 isMobile={isMobile}
             >
                 <Container

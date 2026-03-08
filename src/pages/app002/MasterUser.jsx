@@ -38,7 +38,6 @@ import { Button } from "@/components/ui/button";
 const MasterUser = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-    const breadCrumbItems = [{ label: "Home", path: "/" }, { label: "Master Data" }, { label: "Master User" }]
     // State First Page, Message, and Loading Effect
     const [firstRender, setFirstRender] = useState(false)
     const [app002p01Page, setApp002p01Page] = useState(true);
@@ -539,7 +538,6 @@ const MasterUser = () => {
                 setFirstRender={setFirstRender}
                 title="Users Management"
                 icon={<PersonIcon fontSize="medium" />}
-                breadCrumbItems={breadCrumbItems}
                 isMobile={isMobile}
             >
 
