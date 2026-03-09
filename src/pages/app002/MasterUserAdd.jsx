@@ -130,7 +130,7 @@ const MasterUserAdd = (props) => {
 
               <Field>
                 <FieldLabel>Name</FieldLabel>
-                <InputGroup>
+                <InputGroup className="overflow-hidden">
                   <InputGroupInput
                     id="name"
                     name="name"

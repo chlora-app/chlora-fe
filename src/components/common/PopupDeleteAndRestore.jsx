@@ -26,7 +26,7 @@ const PopupDeleteandRestore = (props) => {
                     {/* Icon custom - tidak pakai AlertDialogMedia */}
                     <div className={`mx-auto mb-2 inline-flex size-16 items-center justify-center rounded-md *:[svg:not([class*='size-'])]:size-8 ${isRestore
                         ? "bg-blue-100 text-blue-500 dark:bg-blue-950"
-                        : "bg-orange-100 text-orange-500 dark:bg-orange-950"
+                        : "bg-red-100 text-red-500 dark:bg-red-950"
                         }`}>
                         {isRestore ? <RotateCcw /> : <Trash2 />}
                     </div>
