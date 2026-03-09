@@ -13,6 +13,8 @@ import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrig
 import { Input } from "@/components/ui/input"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { DUMMY_ACTIVE_USERS, DUMMY_DELETED_USERS } from "./DummyDataUser";
+import { Badge } from "@/components/ui/badge";
+import toast from "react-hot-toast";
 
 
 
@@ -85,8 +87,15 @@ const MasterUser = () => {
             dataField: "name",
             text: "Name",
             sort: true,
-            headerAlign: "center",
-            bodyAlign: "center",
+            headerAlign: "left",
+            bodyAlign: "left",
+        },
+        {
+            dataField: "email",
+            text: "Email",
+            sort: true,
+            headerAlign: "left",
+            bodyAlign: "left",
         },
         {
             dataField: "role",
@@ -94,13 +103,18 @@ const MasterUser = () => {
             sort: true,
             headerAlign: "center",
             bodyAlign: "center",
-        },
-        {
-            dataField: "email",
-            text: "Email",
-            sort: true,
-            headerAlign: "center",
-            bodyAlign: "center",
+            formatter: (cellContent) => {
+                switch (cellContent) {
+                    case "ADMIN":
+                        return <Badge className="bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300">Admin</Badge>
+                    case "USER":
+                        return <Badge className="bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300">User</Badge>
+                    case "STAFF":
+                        return <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">Staff</Badge>
+                    default:
+                        return <Badge className="bg-muted text-muted-foreground">{cellContent}</Badge>
+                }
+            }
         },
         {
             dataField: "action",
@@ -116,7 +130,9 @@ const MasterUser = () => {
                                 size="icon-sm"
                                 onClick={() => handleModalEditOpen(app002UserData)}
                             >
-                                <SquarePen className="text-blue-500" />
+                                <SquarePen
+                                    className="text-blue-500"
+                                />
                             </Button>
                         </TooltipTrigger>
                         <TooltipContent>
@@ -180,8 +196,15 @@ const MasterUser = () => {
             dataField: "name",
             text: "Name",
             sort: true,
-            headerAlign: "center",
-            bodyAlign: "center",
+            headerAlign: "left",
+            bodyAlign: "left",
+        },
+        {
+            dataField: "email",
+            text: "Email",
+            sort: true,
+            headerAlign: "left",
+            bodyAlign: "left",
         },
         {
             dataField: "role",
@@ -189,13 +212,18 @@ const MasterUser = () => {
             sort: true,
             headerAlign: "center",
             bodyAlign: "center",
-        },
-        {
-            dataField: "email",
-            text: "Email",
-            sort: true,
-            headerAlign: "center",
-            bodyAlign: "center",
+            formatter: (cellContent) => {
+                switch (cellContent) {
+                    case "ADMIN":
+                        return <Badge className="bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300">Admin</Badge>
+                    case "USER":
+                        return <Badge className="bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300">User</Badge>
+                    case "STAFF":
+                        return <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">Staff</Badge>
+                    default:
+                        return <Badge className="bg-muted text-muted-foreground">{cellContent}</Badge>
+                }
+            }
         },
         {
             dataField: "action",
@@ -459,21 +487,25 @@ const MasterUser = () => {
     }
     const deleteUserAction = useCallback(async (param) => {
         try {
+            toast.dismiss()
             setLoadingDelete(true)
             const response = await deleteUser(param.user_id)
 
             if (response.status === 204 || response.status === 200) {
-                setApp002setMsg("User Has Been Successfully Deleted.")
-                setApp002setMsgStatus("success")
+                toast.success("User Has Been Successfully Deleted.")
+                // setApp002setMsg("User Has Been Successfully Deleted.")
+                // setApp002setMsgStatus("success")
             } else {
-                setApp002setMsg("Failed to delete user.")
-                setApp002setMsgStatus("error")
+                toast.error("Failed to delete user.")
+                // setApp002setMsg("Failed to delete user.")
+                // setApp002setMsgStatus("error")
             }
         } catch (error) {
-            debugger
-            console.log(error)
-            setApp002setMsg(error?.response?.data?.detail || "System is Unavailable. Please Try Again Later.")
-            setApp002setMsgStatus("error")
+            toast.error(error?.response?.data?.detail || "System is Unavailable. Please Try Again Later.")
+            // debugger
+            // console.log(error)
+            // setApp002setMsg(error?.response?.data?.detail || "System is Unavailable. Please Try Again Later.")
+            // setApp002setMsgStatus("error")
         } finally {
             setModalDeleteOpen(false)
             setLoadingDelete(false)
@@ -494,21 +526,26 @@ const MasterUser = () => {
     }
     const restoreUserAction = useCallback(async (param) => {
         try {
+            toast.dismiss()
             setLoadingRestore(true)
             const response = await restoreUser(param.user_id)
 
             if (response.status === 201 || response.status === 200) {
-                setApp002setMsg("User Has Been Successfully Restored.")
-                setApp002setMsgStatus("success")
+                toast.success("User Has Been Successfully Restored.")
+                // setApp002setMsg("User Has Been Successfully Restored.")
+                // setApp002setMsgStatus("success")
             } else {
-                setApp002setMsg("Failed to restore user.")
-                setApp002setMsgStatus("error")
+                toast.error(error?.response?.data?.detail || "Failed to restore user.")
+
+                // setApp002setMsg("Failed to restore user.")
+                // setApp002setMsgStatus("error")
             }
         } catch (error) {
             debugger
-            console.log(error)
-            setApp002setMsg(error?.response?.data?.detail || "System is Unavailable. Please Try Again Later.")
-            setApp002setMsgStatus("error")
+            toast.error(error?.response?.data?.detail || "System is Unavailable. Please Try Again Later.")
+            // console.log(error)
+            // setApp002setMsg(error?.response?.data?.detail || "System is Unavailable. Please Try Again Later.")
+            // setApp002setMsgStatus("error")
         } finally {
             setModalRestoreOpen(false)
             setLoadingRestore(false)
@@ -538,7 +575,7 @@ const MasterUser = () => {
                             className={selectedTab === "active" ? "flex" : "hidden"}
                             variant="primary"
                         >
-                            <Plus className="h-4 w-4" />
+                            <Plus />
                             <span className="hidden sm:inline">Add User</span>
                         </Button>
                     </div>

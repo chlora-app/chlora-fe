@@ -77,8 +77,9 @@ const MasterUserEdit = (props) => {
                     role: param.role
                 })
             if (response.status === 200) {
-                props.setApp002setMsg("User Has Been Successfully Updated.");
-                props.setApp002setMsgStatus("success");
+                toast.success("User updated successfully.")
+                // props.setApp002setMsg("User Has Been Successfully Updated.");
+                // props.setApp002setMsgStatus("success");
                 props.refreshTable();
                 handleClose()
             }
@@ -98,14 +99,16 @@ const MasterUserEdit = (props) => {
             <Dialog
                 open={props.modalEditOpen}
                 onOpenChange={(open) => { if (!open) handleClose() }}
+
             >
                 <DialogContent
                     className="sm:max-w-md"
                     onInteractOutside={(e) => e.preventDefault()}
+                    onOpenAutoFocus={(e) => e.preventDefault()}
                 >
                     <DialogHeader>
                         <DialogTitle>Edit User</DialogTitle>
-                        <DialogDescription>Update user details to ensure accurate user management
+                        <DialogDescription>Update the user's information below
                         </DialogDescription>
                     </DialogHeader>
 
@@ -134,13 +137,13 @@ const MasterUserEdit = (props) => {
                             </Field>
 
                             <Field className="gap-2">
-                                <FieldLabel>Email</FieldLabel>
+                                <FieldLabel>Email Address</FieldLabel>
                                 <InputGroup className="overflow-hidden">
                                     <InputGroupInput
                                         id="email"
                                         name="email"
                                         type="text"
-                                        placeholder="Enter email"
+                                        placeholder="e.g. john@example.com"
                                         value={app002p03ValidInput.values.email}
                                         onChange={app002p03ValidInput.handleChange}
                                         onBlur={app002p03ValidInput.handleBlur}
@@ -163,7 +166,7 @@ const MasterUserEdit = (props) => {
                                         id="role"
                                         aria-invalid={app002p03ValidInput.touched.role && !!app002p03ValidInput.errors.role}
                                     >
-                                        <SelectValue placeholder="Select role" />
+                                        <SelectValue placeholder="Select a role" />
                                     </SelectTrigger>
                                     <SelectContent>
                                         <SelectGroup>
@@ -201,7 +204,7 @@ const MasterUserEdit = (props) => {
                                     data-icon="inline-start"
                                     className={loadingSpinner ? "flex" : 'hidden'}
                                 />
-                                {loadingSpinner ? "Updating..." : "Update"}
+                                {loadingSpinner ? "Saving..." : "Save Changes"}
                             </Button>
                         </DialogFooter>
                     </form>

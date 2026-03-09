@@ -97,10 +97,11 @@ const MasterUserAdd = (props) => {
         <DialogContent
           className="sm:max-w-md"
           onInteractOutside={(e) => e.preventDefault()}
+          onOpenAutoFocus={(e) => e.preventDefault()}
         >
           <DialogHeader>
             <DialogTitle>Add User</DialogTitle>
-            <DialogDescription>Add a new user and complete the information below</DialogDescription>
+            <DialogDescription>Fill in the details below to create a new user account</DialogDescription>
           </DialogHeader>
 
           <form
@@ -109,13 +110,13 @@ const MasterUserAdd = (props) => {
           >
             <FieldGroup className="gap-2">
               <Field className="gap-2">
-                <FieldLabel>Email</FieldLabel>
+                <FieldLabel>Email Address</FieldLabel>
                 <InputGroup className="overflow-hidden">
                   <InputGroupInput
                     id="email"
                     name="email"
                     type="text"
-                    placeholder="Enter email"
+                    placeholder="e.g. john@example.com"
                     value={app002p02ValidInput.values.email}
                     onChange={app002p02ValidInput.handleChange}
                     onBlur={app002p02ValidInput.handleBlur}
@@ -134,7 +135,7 @@ const MasterUserAdd = (props) => {
                     id="name"
                     name="name"
                     type="text"
-                    placeholder="Enter full name"
+                    placeholder="e.g. John Doe"
                     value={app002p02ValidInput.values.name}
                     onChange={app002p02ValidInput.handleChange}
                     onBlur={app002p02ValidInput.handleBlur}
@@ -157,7 +158,7 @@ const MasterUserAdd = (props) => {
                     id="role"
                     aria-invalid={app002p02ValidInput.touched.role && !!app002p02ValidInput.errors.role}
                   >
-                    <SelectValue placeholder="Select role" />
+                    <SelectValue placeholder="Select a role" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -195,7 +196,7 @@ const MasterUserAdd = (props) => {
                   data-icon="inline-start"
                   className={loadingSpinner ? "flex" : 'hidden'}
                 />
-                {loadingSpinner ? "Saving..." : "Save"}
+                {loadingSpinner ? "Creating..." : "Create User"}
               </Button>
             </DialogFooter>
           </form>

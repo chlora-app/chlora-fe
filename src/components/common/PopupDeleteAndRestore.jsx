@@ -1,8 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
-import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter } from "@/components/ui/alert-dialog";
+import { AlertDialog, AlertDialogContent, AlertDialogHeader, AlertDialogTitle, AlertDialogDescription, AlertDialogFooter, AlertDialogMedia } from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
-import { TriangleAlert, RotateCcw } from "lucide-react";
+import { TriangleAlert, RotateCcw, Trash2 } from "lucide-react";
 import { Spinner } from "@/components/ui/spinner";
 
 const PopupDeleteandRestore = (props) => {
@@ -18,29 +18,31 @@ const PopupDeleteandRestore = (props) => {
     return (
         <AlertDialog open={props.modalOpen}>
             <AlertDialogContent
+                // size="sm"
                 onInteractOutside={(e) => e.preventDefault()}
-                className="sm:max-w-sm"
+                onOpenAutoFocus={(e) => e.preventDefault()}
             >
-                <AlertDialogHeader className="items-center justify-center">
-                    <div className={`flex items-center justify-center rounded-full p-4 ${isRestore ? "bg-blue-100 dark:bg-blue-950" : "bg-orange-100 dark:bg-orange-950"}`}>
-                        {isRestore
-                            ? <RotateCcw className="h-8 w-8 text-blue-500" />
-                            : <TriangleAlert className="h-8 w-8 text-orange-500" />
-                        }
+                <AlertDialogHeader className="text-center align-middle justify-center items-center">
+                    {/* Icon custom - tidak pakai AlertDialogMedia */}
+                    <div className={`mx-auto mb-2 inline-flex size-16 items-center justify-center rounded-md *:[svg:not([class*='size-'])]:size-8 ${isRestore
+                        ? "bg-blue-100 text-blue-500 dark:bg-blue-950"
+                        : "bg-orange-100 text-orange-500 dark:bg-orange-950"
+                        }`}>
+                        {isRestore ? <RotateCcw /> : <Trash2 />}
                     </div>
 
-                    <AlertDialogTitle className="text-center">
+                    <AlertDialogTitle className="text-center w-full">
                         Are you sure you want to continue?
                     </AlertDialogTitle>
 
-                    <AlertDialogDescription className="text-center">
+                    <AlertDialogDescription className="text-center sm:text-center">
                         {isRestore
                             ? "This action will restore the selected data and make it active again"
                             : "Deleted data will not be permanently deleted immediately and can still be restored via the data archive menu"
                         }
                     </AlertDialogDescription>
-
                 </AlertDialogHeader>
+
                 <AlertDialogFooter className="flex-row gap-2">
                     <Button
                         variant="outline"
@@ -57,13 +59,9 @@ const PopupDeleteandRestore = (props) => {
                         disabled={props.loading}
                     >
                         <Spinner className={props.loading ? "flex" : "hidden"} />
-                        {props.loading
-                            ? "Processing..."
-                            : isRestore ? "Restore" : "Delete"
-                        }
+                        {props.loading ? "Processing..." : isRestore ? "Restore" : "Delete"}
                     </Button>
                 </AlertDialogFooter>
-
             </AlertDialogContent>
 
         </AlertDialog>
