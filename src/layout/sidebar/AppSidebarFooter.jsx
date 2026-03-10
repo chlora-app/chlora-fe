@@ -1,6 +1,5 @@
 "use client"
 import {
-    BadgeCheck,
     Bell,
     ChevronsUpDown,
     SunMoon,
@@ -13,7 +12,6 @@ import {
 import {
     Avatar,
     AvatarFallback,
-    AvatarImage,
 } from "@/components/ui/avatar"
 import {
     DropdownMenu,
@@ -36,6 +34,7 @@ import {
 import { useThemeMode } from "@/context/ThemeContext";
 import { useAuth } from "@/context/AuthContext"
 import { useState } from "react"
+import { capitalizeWords } from "@/components/common/Regex"
 
 const AppSidebarFooter = (props) => {
     const { mode, setMode } = useThemeMode();
@@ -59,13 +58,6 @@ const AppSidebarFooter = (props) => {
         }
     };
 
-    const formatRole = (role) => {
-        if (!role) return ""
-        return role.charAt(0).toUpperCase() + role.slice(1).toLowerCase()
-    }
-
-
-
 
     return (
         <SidebarMenu>
@@ -73,14 +65,14 @@ const AppSidebarFooter = (props) => {
                 <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                         <SidebarMenuButton size="lg"
-                            className="data-[active=true]:!bg-sidebar-accent data-[active=true]:!text-sidebar-foreground data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
+                            className="data-[active=true]:bg-sidebar-accent! data-[active=true]:text-sidebar-foreground! data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
                         >
                             <Avatar className="h-8 w-8 rounded-lg">
                                 <AvatarFallback className="rounded-lg">{initialName(nameUser)}</AvatarFallback>
                             </Avatar>
                             <div className="grid flex-1 text-left text-sm leading-tight">
                                 <span className="truncate font-medium">{nameUser}</span>
-                                <span className="truncate text-xs">{formatRole(roleUser)}</span>
+                                <span className="truncate text-xs">{capitalizeWords(roleUser)}</span>
                             </div>
                             <ChevronsUpDown className="ml-auto size-4" />
                         </SidebarMenuButton>
@@ -99,7 +91,7 @@ const AppSidebarFooter = (props) => {
                                 </Avatar>
                                 <div className="grid flex-1 text-left text-sm leading-tight">
                                     <span className="truncate font-medium">{nameUser}</span>
-                                    <span className="truncate text-xs">{formatRole(roleUser)}</span>
+                                    <span className="truncate text-xs">{capitalizeWords(roleUser)}</span>
                                 </div>
                             </div>
                         </DropdownMenuLabel>

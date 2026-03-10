@@ -27,8 +27,6 @@ const AppSidebarContent = () => {
     const { state } = useSidebar()
     const isCollapsed = state === "collapsed"
 
-
-
     const getActiveParent = () => {
         const active = MenuRoutes.find(menu =>
             menu?.sub?.some(sub => sub.path === location.pathname)
