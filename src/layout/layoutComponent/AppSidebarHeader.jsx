@@ -19,7 +19,7 @@ const AppSidebarHeader = () => {
                 >
                     <div className="flex items-center justify-center">
                         {isCollapsed
-                            ? <img src={SmallIcon} className="h-auto w-auto" />
+                            ? <img src={SmallIcon} className="h-6 w-6" />
                             : <img src={Brand} className="h-10 w-40" />
                         }
                     </div>

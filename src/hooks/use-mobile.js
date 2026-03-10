@@ -1,6 +1,7 @@
 import * as React from "react"
 
-const MOBILE_BREAKPOINT = 768
+// Default 768 bug sidebar if 768
+const MOBILE_BREAKPOINT = 769
 
 export function useIsMobile() {
   const [isMobile, setIsMobile] = React.useState(undefined)
