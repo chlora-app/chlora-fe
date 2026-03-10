@@ -489,7 +489,7 @@ const MasterUser = () => {
                     <Card>
                         <CardContent>
                             <Tabs value={selectedTab} onValueChange={handleTabChange}>
-                                <div className="flex flex-col gap-2 mb-4">
+                                <div className="flex flex-col mb-2">
                                     <div className="flex items-center justify-between gap-2">
                                         <TabsList className="w-full sm:w-fit">
                                             <TabsTrigger value="active" className="flex-1 sm:flex-none">
@@ -554,7 +554,6 @@ const MasterUser = () => {
                                             </SelectContent>
                                         </Select>
                                     </div>
-
                                 </div>
 
                                 <TabsContent value="active">

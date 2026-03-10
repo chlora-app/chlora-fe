@@ -1,20 +1,8 @@
-import React, { useState, useEffect, useCallback, act } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
-    Container,
-    Typography,
-    Grid,
-    TextField,
     IconButton,
     Stack,
-    Autocomplete,
     Tooltip,
-    Button,
-    Box,
-    useTheme,
-    useMediaQuery,
-    Paper,
-    Select,
-    MenuItem,
 } from "@mui/material";
 import RootPageCustom from "../../components/common/RootPageCustom";
 import TableCustom from "../../components/common/TableCustom";
@@ -23,12 +11,14 @@ import PopupDeleteAndRestore from "../../components/common/PopupDeleteAndRestore
 import { Trash2, SquarePen, Plus, Search, RotateCcw } from "lucide-react";
 import MasterDeviceAdd from "./MasterDeviceAdd";
 import MasterDeviceEdit from "./MasterDeviceEdit";
-import { AddIcon, MemoryIcon, SearchIcon } from "../../assets/Icon/muiIcon";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const MasterDevice = () => {
     // State First Page, Message, and Loading Effect
-    const theme = useTheme();
-    const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
     const breadCrumbItems = [{ label: "Home", path: "/" }, { label: "Master Data" }, { label: "Master Device" }]
     const [firstRender, setFirstRender] = useState(false)
     const [app004p01Page, setApp004p01Page] = useState(true);
@@ -334,16 +324,102 @@ const MasterDevice = () => {
     return (
         <React.Fragment>
             <RootPageCustom
-                msgStateGet={app004Msg}
-                msgStateSet={setApp004setMsg}
-                msgStateGetStatus={app004MsgStatus}
                 setFirstRender={setFirstRender}
-                title="Devices Management"
-                icon={<MemoryIcon fontSize="medium" />}
-                breadCrumbItems={breadCrumbItems}
-                isMobile={isMobile}
             >
-                <Container
+
+                <div className={`${app004p01Page ? "flex" : "hidden"} flex-col gap-2`}>
+                    <div className="flex items-center justify-between px-6 mb-2">
+                        <div>
+                            <h1 className="text-xl font-semibold">Device Management</h1>
+                            <p className="text-sm text-muted-foreground">Manage and monitor registered devices</p>
+                        </div>
+                        <Button
+                            size="sm"
+                            onClick={handleModalAddOpen}
+                        >
+                            <Plus />
+                            <span className="hidden sm:inline">Add Device</span>
+                        </Button>
+                    </div>
+
+                    <Card>
+                        <CardContent>
+                            <div className="flex flex-wrap items-center justify-end gap-2 mb-4">
+                                <div className="relative w-full sm:w-48">
+                                    <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                    <Input
+                                        placeholder="Search..."
+                                        value={search}
+                                        onChange={(e) => setSearch(e.target.value)}
+                                        onKeyDown={(e) => { if (e.key === "Enter") handleSearchState() }}
+                                        className="pl-8"
+                                    />
+                                </div>
+
+                                <Select value={cluster} onValueChange={handleClusterChange}>
+                                    <SelectTrigger className="flex-1 sm:w-36 sm:flex-none">
+                                        <SelectValue placeholder="All Cluster" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem value="all">All Cluster</SelectItem>
+                                            {clusterOption.map((item) => (
+                                                <SelectItem key={item.value} value={item.value}>
+                                                    {item.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+
+                                <Select value={status} onValueChange={handleStatusChange}>
+                                    <SelectTrigger className="flex-1 sm:w-36 sm:flex-none">
+                                        <SelectValue placeholder="All Status" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        <SelectGroup>
+                                            <SelectItem value="all">All Status</SelectItem>
+                                            {statusOptions.map((item) => (
+                                                <SelectItem key={item.value} value={item.value}>
+                                                    {item.label}
+                                                </SelectItem>
+                                            ))}
+                                        </SelectGroup>
+                                    </SelectContent>
+                                </Select>
+                            </div>
+
+                            <TableCustom
+                                keyField="device_id"
+                                loadingData={loadingData}
+                                columns={app004DeviceColumns}
+                                appdata={app004DeviceData}
+                                appdataTotal={app004DeviceTotalData}
+                                totalPage={app004TotalPage}
+                                rowsPerPageOption={[5, 10, 20, 25]}
+
+                                page={app004DeviceDataParam.page - 1}
+                                rowsPerPage={app004DeviceDataParam.size}
+                                sortField={app004DeviceDataParam.sort}
+                                sortOrder={app004DeviceDataParam.order}
+
+
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                                onRequestSort={handleRequestSort}
+                            />
+                        </CardContent>
+                    </Card>
+
+
+
+
+                </div>
+
+
+
+
+                {/* <Container
                     maxWidth={false}
                     hidden={!app004p01Page}
                     disableGutters
@@ -439,7 +515,7 @@ const MasterDevice = () => {
                         </Stack>
 
                         <Stack>
-                            {/* <TableCustom
+                            <TableCustom
                                 keyField="device_id"
                                 loadingData={loadingData}
                                 columns={app004DeviceColumns}
@@ -457,10 +533,10 @@ const MasterDevice = () => {
                                 onPageChange={handleChangePage}
                                 onRowsPerPageChange={handleChangeRowsPerPage}
                                 onRequestSort={handleRequestSort}
-                            /> */}
+                            />
                         </Stack>
                     </Box>
-                </Container>
+                </Container> */}
 
                 {modalAddOpen && (
                     <MasterDeviceAdd
