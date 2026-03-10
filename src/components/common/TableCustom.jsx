@@ -31,6 +31,7 @@ import {
     ArrowUp,
     ArrowDown,
     ChevronsUpDown,
+    InboxIcon,
 } from "lucide-react"
 
 const TableCustom = (props) => {
@@ -64,19 +65,19 @@ const TableCustom = (props) => {
                     )
                 }
                 return (
-                    <button
+                    <Button
+                        variant="ghost"
                         onClick={() => handleSort(col.dataField)}
-                        className={`flex items-center gap-1 font-medium hover:text-foreground ${centered ? "mx-auto" : ""}`}
+                        className={`flex items-center gap-2 font-medium hover:text-foreground ${centered ? "mx-auto" : ""}`}
                     >
                         {col.text}
-                        {sortField === col.dataField ? (
-                            sortOrder === "asc"
-                                ? <ArrowUp className="h-3 w-3" />
-                                : <ArrowDown className="h-3 w-3" />
-                        ) : (
-                            <ChevronsUpDown className="h-3 w-3 text-muted-foreground" />
-                        )}
-                    </button>
+                        {sortField === col.dataField ?
+                            (sortOrder === "asc"
+                                ? <ArrowUp className="h-3 w-3 mt-0.5" /> : <ArrowDown className="h-3 w-3 mt-0.5" />
+                            ) : (
+                                <ChevronsUpDown className="h-3 w-3 text-muted-foreground mt-0.5" />
+                            )}
+                    </Button>
                 )
             },
             cell: ({ row }) => {
@@ -108,8 +109,6 @@ const TableCustom = (props) => {
 
     return (
         <div className="flex flex-col gap-4">
-
-            {/* Table */}
             <div className="overflow-hidden rounded-lg border">
                 <Table>
                     <TableHeader className="bg-muted">
@@ -132,7 +131,7 @@ const TableCustom = (props) => {
                             <TableRow>
                                 <TableCell
                                     colSpan={props.columns.length}
-                                    className="h-24 text-center text-muted-foreground"
+                                    className="h-105 text-center text-muted-foreground"
                                 >
                                     Loading...
                                 </TableCell>
@@ -141,9 +140,12 @@ const TableCustom = (props) => {
                             <TableRow>
                                 <TableCell
                                     colSpan={props.columns.length}
-                                    className="h-24 text-center text-muted-foreground"
+                                    className="h-105 text-center"
                                 >
-                                    No records to display
+                                    <div className="flex flex-col items-center justify-center gap-2 text-muted-foreground">
+                                        <InboxIcon className="h-10 w-10 opacity-40" />
+                                        <span className="text-sm">No records to display</span>
+                                    </div>
                                 </TableCell>
                             </TableRow>
                         ) : (
@@ -164,17 +166,11 @@ const TableCustom = (props) => {
                 </Table>
             </div>
 
-            {/* Footer */}
             <div className="flex items-center justify-between px-2">
-
-                {/* Showing info - hidden on mobile */}
                 <div className="hidden flex-1 text-sm text-muted-foreground lg:flex">
                     Showing {from} to {to} of {props.appdataTotal} entries
                 </div>
-
                 <div className="flex w-full items-center gap-6 lg:w-fit">
-
-                    {/* Rows per page - hidden on mobile */}
                     <div className="hidden items-center gap-2 lg:flex">
                         <Label className="text-sm font-medium">Rows per page</Label>
                         <Select
@@ -191,15 +187,11 @@ const TableCustom = (props) => {
                             </SelectContent>
                         </Select>
                     </div>
-
-                    {/* Page info */}
                     <div className="flex w-fit items-center justify-center text-sm font-medium">
                         Page {page + 1} of {totalPages}
                     </div>
 
-                    {/* Pagination buttons */}
                     <div className="ml-auto flex items-center gap-2 lg:ml-0">
-                        {/* First - hidden on mobile */}
                         <Button
                             variant="outline"
                             className="hidden h-8 w-8 p-0 lg:flex"
@@ -210,8 +202,6 @@ const TableCustom = (props) => {
                             <span className="sr-only">Go to first page</span>
                             <ChevronsLeft className="h-4 w-4" />
                         </Button>
-
-                        {/* Prev */}
                         <Button
                             variant="outline"
                             className="size-8"
@@ -222,8 +212,6 @@ const TableCustom = (props) => {
                             <span className="sr-only">Go to previous page</span>
                             <ChevronLeft className="h-4 w-4" />
                         </Button>
-
-                        {/* Next */}
                         <Button
                             variant="outline"
                             className="size-8"
@@ -234,8 +222,6 @@ const TableCustom = (props) => {
                             <span className="sr-only">Go to next page</span>
                             <ChevronRight className="h-4 w-4" />
                         </Button>
-
-                        {/* Last - hidden on mobile */}
                         <Button
                             variant="outline"
                             className="hidden size-8 lg:flex"
@@ -247,10 +233,8 @@ const TableCustom = (props) => {
                             <ChevronsRight className="h-4 w-4" />
                         </Button>
                     </div>
-
                 </div>
             </div>
-
         </div>
     )
 }
