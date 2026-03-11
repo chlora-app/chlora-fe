@@ -14,21 +14,6 @@ import toast from "react-hot-toast";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 
-
-// Taruh di atas component, sebelum const MasterDevice = () => {
-const DUMMY_DEVICES = [
-    { device_id: "DEV-001", device_name: "Soil Sensor A1", device_type: "Sensor", cluster_name: "Cluster Alpha", status: "ONLINE" },
-    { device_id: "DEV-002", device_name: "Water Pump B2", device_type: "ACTUATOR", cluster_name: "Cluster Beta", status: "OFFLINE" },
-    { device_id: "DEV-003", device_name: "Temp Sensor C3", device_type: "Sensor", cluster_name: "Cluster Alpha", status: "ONLINE" },
-    { device_id: "DEV-004", device_name: "Valve Controller D4", device_type: "ACTUATOR", cluster_name: "Cluster Gamma", status: "ONLINE" },
-    { device_id: "DEV-005", device_name: "Humidity Sensor E5", device_type: "Sensor", cluster_name: "Cluster Beta", status: "OFFLINE" },
-    { device_id: "DEV-005", device_name: "Humidity Sensor E5", device_type: "Sensor", cluster_name: "Cluster Beta", status: "OFFLINE" },
-    { device_id: "DEV-005", device_name: "Humidity Sensor E5", device_type: "Sensor", cluster_name: "Cluster Beta", status: "OFFLINE" },
-    { device_id: "DEV-005", device_name: "Humidity Sensor E5", device_type: "Sensor", cluster_name: "Cluster Beta", status: "OFFLINE" },
-    { device_id: "DEV-005", device_name: "Humidity Sensor E5", device_type: "Sensor", cluster_name: "Cluster Beta", status: "OFFLINE" },
-    { device_id: "DEV-005", device_name: "Humidity Sensor E5", device_type: "Sensor", cluster_name: "Cluster Beta", status: "OFFLINE" },
-]
-
 const MasterDevice = () => {
     // State First Page, Message, and Loading Effect
     const [firstRender, setFirstRender] = useState(false)
@@ -182,31 +167,21 @@ const MasterDevice = () => {
     // Data From API Active Device
     const getAllDevice = useCallback(async (param) => {
         setLoadingData(true);
-        setTimeout(() => {
-            setApp004DeviceData(DUMMY_DEVICES)
-            setApp004DeviceTotalData(DUMMY_DEVICES.length)
-            app004SetTotalPage(1)
-            setLoadingData(false)
-        }, 500)
-    })
-
-    // const getAllDevice = useCallback(async (param) => {
-    //     setLoadingData(true);
-    //     try {
-    //         const response = await getDevice(param);
-    //         console.table(response.data.devices)
-    //         setApp004DeviceData(response?.data?.devices ? response.data.devices : []);
-    //         setApp004DeviceTotalData(response?.data?.count_data ? response.data.count_data : 0);
-    //         app004SetTotalPage(response?.data?.total_pages ? response.data?.total_pages : 0);
+        try {
+            const response = await getDevice(param);
+            console.table(response.data.devices)
+            setApp004DeviceData(response?.data?.devices ? response.data.devices : []);
+            setApp004DeviceTotalData(response?.data?.count_data ? response.data.count_data : 0);
+            app004SetTotalPage(response?.data?.total_pages ? response.data?.total_pages : 0);
 
 
-    //     } catch (error) {
-    //         console.error("Gagal mengambil data:", error);
+        } catch (error) {
+            console.error("Gagal mengambil data:", error);
 
-    //     } finally {
-    //         setLoadingData(false);
-    //     }
-    // });
+        } finally {
+            setLoadingData(false);
+        }
+    });
 
     useEffect(() => {
         if (app004p01Page) {

@@ -39,10 +39,10 @@ export const AuthProvider = ({ children }) => {
 
     const clearAuthState = () => {
         // debugger
-        // setUser(null);
-        // setLoginStatus(false);
-        // localStorage.removeItem("user");
-        // localStorage.removeItem("loginStatus");
+        setUser(null);
+        setLoginStatus(false);
+        localStorage.removeItem("user");
+        localStorage.removeItem("loginStatus");
     }
 
     useEffect(() => {
