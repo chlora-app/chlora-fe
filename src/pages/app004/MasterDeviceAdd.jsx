@@ -110,7 +110,7 @@ const MasterDeviceAdd = (props) => {
                 <Select
                   value={app004p02ValidInput.values.deviceType}
                   onValueChange={(val) => app004p02ValidInput.setFieldValue("deviceType", val)}
-                  onOpenChange={() => app004p02ValidInput.setFieldTouched("deviceType", true)}
+                  // onOpenChange={() => app004p02ValidInput.setFieldTouched("deviceType", true)}
                 >
                   <SelectTrigger
                     id="deviceType"
@@ -138,7 +138,7 @@ const MasterDeviceAdd = (props) => {
                 <Select
                   value={app004p02ValidInput.values.clusterName}
                   onValueChange={(val) => app004p02ValidInput.setFieldValue("clusterId", val)}
-                  onOpenChange={() => app004p02ValidInput.setFieldTouched("clusterId", true)}
+                  // onOpenChange={() => app004p02ValidInput.setFieldTouched("clusterId", true)}
                 >
                   <SelectTrigger
                     id="clusterId"
@@ -195,6 +195,8 @@ MasterDeviceAdd.propTypes = {
   modalAddOpen: PropTypes.any,
   setModalAddOpen: PropTypes.any,
   refreshTable: PropTypes.any,
+  clusterOption: PropTypes.any,
+  deviceTypeOption: PropTypes.any,
 };
 
 export default MasterDeviceAdd

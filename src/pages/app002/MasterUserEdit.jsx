@@ -11,8 +11,6 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import toast from "react-hot-toast";
 
-
-
 const MasterUserEdit = (props) => {
     const [loadingSpinner, setLoadingSpinner] = useState(false);
     const handleClose = () => { props.setModalEditOpen(false) }
@@ -162,7 +160,7 @@ const MasterUserEdit = (props) => {
                                 <Select
                                     value={app002p03ValidInput.values.role}
                                     onValueChange={(val) => app002p03ValidInput.setFieldValue("role", val)}
-                                    onOpenChange={() => app002p03ValidInput.setFieldTouched("role", true)}
+                                    // onOpenChange={() => app002p03ValidInput.setFieldTouched("role", true)}
                                 >
                                     <SelectTrigger
                                         id="role"

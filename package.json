@@ -10,16 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@emotion/react": "^11.14.0",
-    "@emotion/styled": "^11.14.1",
     "@iconify/icons-fa": "^1.2.3",
     "@iconify/icons-mdi": "^1.2.48",
     "@iconify/react": "^6.0.2",
     "@mdi/font": "^7.4.47",
     "@mdi/js": "^7.4.47",
     "@mdi/react": "^1.6.1",
-    "@mui/icons-material": "^7.3.4",
-    "@mui/material": "^7.3.4",
     "@tailwindcss/vite": "^4.2.1",
     "@tanstack/react-table": "^8.21.3",
     "axios": "^1.13.1",

@@ -131,7 +131,7 @@ const MasterUserAdd = (props) => {
                 <Select
                   value={app002p02ValidInput.values.role}
                   onValueChange={(val) => app002p02ValidInput.setFieldValue("role", val)}
-                  onOpenChange={() => app002p02ValidInput.setFieldTouched("role", true)}
+                  // onOpenChange={() => app002p02ValidInput.setFieldTouched("role", true)}
                 >
                   <SelectTrigger
                     id="role"

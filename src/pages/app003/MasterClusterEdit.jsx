@@ -117,6 +117,7 @@ const MasterClusterEdit = (props) => {
                                         id="clusterName"
                                         name="clusterName"
                                         type="text"
+                                        placeholder="Enter cluster name"
                                         value={app003p03ValidInput.values.clusterName}
                                         onChange={app003p03ValidInput.handleChange}
                                         onBlur={app003p03ValidInput.handleBlur}
