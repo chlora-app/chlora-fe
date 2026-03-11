@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import { useFormik } from "formik";
 import * as Yup from "yup";
 import { editDevice } from "../../utils/ListApi";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Field, FieldGroup, FieldLabel } from "@/components/ui/field";
 
 
 
@@ -78,6 +80,37 @@ const MasterDeviceEdit = (props) => {
 
     return (
         <React.Fragment>
+            <Dialog
+                open={props.modalEditOpen}
+                onOpenChange={(open) => { if (!open) handleClose() }}
+            >
+                <DialogContent
+                    className="sm:max-w-md"
+                    onInteractOutside={(e) => e.preventDefault()}
+                    onOpenAutoFocus={(e) => e.preventDefault()}
+                >
+                    <DialogHeader>
+                        <DialogTitle>Edit Device</DialogTitle>
+                        <DialogDescription>Update the device information</DialogDescription>
+                    </DialogHeader>
+
+                    <form
+                        onSubmit={app003p03ValidInput.handleSubmit}
+                        className="flex flex-col gap-6"
+                    >
+                        <FieldGroup className="gap-2">
+                            <Field className="gap-2">
+                                <FieldLabel>Device Id</FieldLabel>
+
+                            </Field>
+
+                        </FieldGroup>
+
+                    </form>
+
+                </DialogContent>
+
+            </Dialog>
 
 
             {/* <Dialog
