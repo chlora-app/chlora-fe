@@ -137,14 +137,14 @@ const MasterDeviceAdd = (props) => {
                 <FieldLabel>Cluster Name</FieldLabel>
                 <Select
                   value={app004p02ValidInput.values.clusterName}
-                  onValueChange={(val) => app004p02ValidInput.setFieldValue("clusterName", val)}
-                  onOpenChange={() => app004p02ValidInput.setFieldTouched("clusterName", true)}
+                  onValueChange={(val) => app004p02ValidInput.setFieldValue("clusterId", val)}
+                  onOpenChange={() => app004p02ValidInput.setFieldTouched("clusterId", true)}
                 >
                   <SelectTrigger
-                    id="deviceType"
-                    aria-invalid={app004p02ValidInput.touched.clusterName && !!app004p02ValidInput.errors.clusterName}
+                    id="clusterId"
+                    aria-invalid={app004p02ValidInput.touched.clusterId && !!app004p02ValidInput.errors.clusterId}
                   >
-                    <SelectValue placeholder="Select device type" />
+                    <SelectValue placeholder="Select cluster name" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectGroup>
@@ -156,8 +156,8 @@ const MasterDeviceAdd = (props) => {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
-                {app004p02ValidInput.touched.clusterName && app004p02ValidInput.errors.clusterName && (
-                  <FieldDescription className="text-xs text-destructive">{app004p02ValidInput.errors.clusterName}</FieldDescription>
+                {app004p02ValidInput.touched.clusterId && app004p02ValidInput.errors.clusterId && (
+                  <FieldDescription className="text-xs text-destructive">{app004p02ValidInput.errors.clusterId}</FieldDescription>
                 )}
               </Field>
 

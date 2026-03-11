@@ -2,12 +2,6 @@ import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from 'prop-types';
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button, TextField, Stack, Box, InputAdornment, Select, Typography, Autocomplete } from "@mui/material";
-import MailOutlineOutlinedIcon from '@mui/icons-material/MailOutlineOutlined';
-import CloseIcon from '@mui/icons-material/Close';
-import IconButton from '@mui/material/IconButton';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-import AdminPanelSettingsIcon from '@mui/icons-material/AdminPanelSettings';
 import { editDevice } from "../../utils/ListApi";
 
 
@@ -84,7 +78,9 @@ const MasterDeviceEdit = (props) => {
 
     return (
         <React.Fragment>
-            <Dialog
+
+
+            {/* <Dialog
                 open={props.modalEditOpen}
                 onClose={(event, reason) => {
                     if (reason === 'backdropClick') return;
@@ -318,7 +314,7 @@ const MasterDeviceEdit = (props) => {
                         </Box>
                     </Stack>
                 </DialogContent>
-            </Dialog>
+            </Dialog> */}
         </React.Fragment>
     )
 }
