@@ -41,7 +41,7 @@ const MasterUserAdd = (props) => {
       }),
 
     onSubmit: async (values, { setSubmitting }) => {
-      toast.dismiss()
+      toast.dismissAll()
       setSubmitting(true)
       setLoadingSpinner(true)
       await SaveUserAction(values)

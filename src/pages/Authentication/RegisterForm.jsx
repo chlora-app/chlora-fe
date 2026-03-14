@@ -16,14 +16,14 @@ const RegisterForm = () => {
     const isSubmittingRef = useRef(false)
     const [isPending, setIsPending] = useState(false)
     const [showPassword, setShowPassword] = useState(false);
-    const [showRePassword, setShowRePassword] = useState(false);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
     const handleRegister = async (values) => {
         const response = await registerApi({
-            name: values.username,
+            name: values.name,
             email: values.email,
             password: values.password,
-            confirm_password: values.rePassword
+            confirmPassword: values.confirmPassword
         })
         return response;
     };
@@ -32,14 +32,14 @@ const RegisterForm = () => {
     const formik = useFormik({
         initialValues:
         {
-            username: "",
+            name: "",
             email: "",
             password: "",
-            rePassword: "",
+            confirmPassword: "",
         },
         validationSchema: Yup.object
             ({
-                username: Yup.string()
+                name: Yup.string()
                     .required("Name is required.")
                     .min(4, "Name must be at least 4 characters.")
                     .max(20, "Name must not exceed 20 characters.")
@@ -60,13 +60,14 @@ const RegisterForm = () => {
                     .matches(/[a-z]/, "Password must contain at least one lowercase letter.")
                     .matches(/[A-Z]/, "Password must contain at least one uppercase letter.")
                     .matches(/[0-9]/, "Password must contain at least one number."),
-                rePassword: Yup.string()
+                confirmPassword: Yup.string()
                     .required("Please confirm your password.")
                     .oneOf([Yup.ref("password"), null], "Password do not match"),
             }),
 
         onSubmit: async (values, { setSubmitting, resetForm }) => {
-            toast.dismiss()
+            debugger    
+            toast.dismissAll()
             if (isSubmittingRef.current) return
             isSubmittingRef.current = true
             setSubmitting(true)
@@ -81,9 +82,9 @@ const RegisterForm = () => {
                     setTimeout(() => {
                         resetForm()
                         setShowPassword(false)
-                        setShowRePassword(false)
+                        setShowConfirmPassword(false)
                         navigate("/login")
-                        toast.dismiss()
+                        toast.dismissAll()
                     }, 1000)
                 }, 1500)
             } catch (error) {
@@ -114,22 +115,22 @@ const RegisterForm = () => {
                     >
                         <FieldGroup className="gap-2">
                             <Field className="flex flex-col gap-2">
-                                <FieldLabel htmlFor="username">Name</FieldLabel>
+                                <FieldLabel htmlFor="name">Name</FieldLabel>
                                 <InputGroup className="overflow-hidden">
                                     <InputGroupInput
-                                        id="username"
-                                        name="username"
+                                        id="name"
+                                        name="name"
                                         type="text"
                                         placeholder="Enter your full name"
-                                        value={formik.values.username}
+                                        value={formik.values.name}
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
-                                        aria-invalid={formik.touched.username && !!formik.errors.username}
+                                        aria-invalid={formik.touched.name && !!formik.errors.name}
                                     />
                                 </InputGroup>
 
-                                {formik.touched.username && formik.errors.username && (
-                                    <FieldDescription className="text-xs text-destructive">{formik.errors.username}</FieldDescription>
+                                {formik.touched.name && formik.errors.name && (
+                                    <FieldDescription className="text-xs text-destructive">{formik.errors.name}</FieldDescription>
                                 )}
 
                             </Field>
@@ -179,25 +180,25 @@ const RegisterForm = () => {
                             </Field>
 
                             <Field className="flex flex-col gap-2">
-                                <FieldLabel htmlFor="rePassword">Confirm Password</FieldLabel>
+                                <FieldLabel htmlFor="confirmPassword">Confirm Password</FieldLabel>
                                 <InputGroup className="overflow-hidden">
                                     <InputGroupInput
-                                        id="rePassword"
-                                        name="rePassword"
-                                        type={showRePassword ? "text" : "password"}
+                                        id="confirmPassword"
+                                        name="confirmPassword"
+                                        type={showConfirmPassword ? "text" : "password"}
                                         placeholder="Confirm your password"
-                                        value={formik.values.rePassword}
+                                        value={formik.values.confirmPassword}
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
-                                        aria-invalid={formik.touched.rePassword && !!formik.errors.rePassword}
+                                        aria-invalid={formik.touched.confirmPassword && !!formik.errors.confirmPassword}
                                     />
-                                    <InputGroupAddon align="inline-end" onClick={() => setShowRePassword(!showRePassword)}>
-                                        {showRePassword ? <EyeIcon /> : <EyeOffIcon />}
+                                    <InputGroupAddon align="inline-end" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                                        {showConfirmPassword ? <EyeIcon /> : <EyeOffIcon />}
                                     </InputGroupAddon>
                                 </InputGroup>
 
-                                {formik.touched.rePassword && formik.errors.rePassword && (
-                                    <FieldDescription className="text-xs text-destructive">{formik.errors.rePassword}</FieldDescription>
+                                {formik.touched.confirmPassword && formik.errors.confirmPassword && (
+                                    <FieldDescription className="text-xs text-destructive">{formik.errors.confirmPassword}</FieldDescription>
                                 )}
                             </Field>
 

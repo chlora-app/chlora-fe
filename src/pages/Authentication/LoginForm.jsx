@@ -23,7 +23,7 @@ const LoginForm = () => {
 
     const handleLogin = async (values) => {
         const response = await loginApi({
-            user_id_or_email: values.username,
+            userIdOrEmail: values.userIdOrEmail,
             password: values.password
         })
         return response
@@ -32,15 +32,15 @@ const LoginForm = () => {
     const formik = useFormik({
         enableReinitialize: true,
         initialValues: {
-            username: "",
+            userIdOrEmail: "",
             password: "",
         },
         validationSchema: Yup.object({
-            username: Yup.string().required("Email or Username is required."),
+            userIdOrEmail: Yup.string().required("Email or UserID is required."),
             password: Yup.string().required("Password is required."),
         }),
         onSubmit: async (values, { setSubmitting, resetForm }) => {
-            toast.dismiss()
+            toast.dismissAll()
             if (isSubmittingRef.current) return
             isSubmittingRef.current = true
             setSubmitting(true)
@@ -87,22 +87,22 @@ const LoginForm = () => {
                     >
                         <FieldGroup className="gap-2">
                             <Field className="flex flex-col gap-2">
-                                <FieldLabel htmlFor="username">Email or user id</FieldLabel>
+                                <FieldLabel htmlFor="userIdOrEmail">Email or user id</FieldLabel>
                                 <InputGroup className="overflow-hidden">
                                     <InputGroupInput
-                                        id="username"
-                                        name="username"
+                                        id="userIdOrEmail"
+                                        name="userIdOrEmail"
                                         type="text"
                                         placeholder="Enter your email or user id"
-                                        value={formik.values.username}
+                                        value={formik.values.userIdOrEmail}
                                         onChange={formik.handleChange}
                                         onBlur={formik.handleBlur}
-                                        aria-invalid={formik.touched.username && !!formik.errors.username}
+                                        aria-invalid={formik.touched.userIdOrEmail && !!formik.errors.userIdOrEmail}
                                     />
                                 </InputGroup>
 
-                                {formik.touched.username && formik.errors.username && (
-                                    <FieldDescription className="text-xs text-destructive">{formik.errors.username}</FieldDescription>
+                                {formik.touched.userIdOrEmail && formik.errors.userIdOrEmail && (
+                                    <FieldDescription className="text-xs text-destructive">{formik.errors.userIdOrEmail}</FieldDescription>
                                 )}
 
                             </Field>

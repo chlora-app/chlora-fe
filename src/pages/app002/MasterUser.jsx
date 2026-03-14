@@ -233,7 +233,7 @@ const MasterUser = () => {
 
     // Data From API Active User
     const getAllUser = useCallback(async (param) => {
-        // toast.dismiss()
+        toast.dismissAll()
         setLoading(true);
         try {
             const response = await getUser(param);
@@ -241,105 +241,28 @@ const MasterUser = () => {
             setApp002UserTotalData(response?.data?.count_data ? response.data.count_data : 0);
             app002SetTotalPage(response?.data?.total_pages ? response.data?.total_pages : 0);
         } catch (error) {
-            toast.error("Gagal mengambil data")
+            toast.error("System is unavailable, please try again later.")
         } finally {
             setLoading(false);
         }
     });
 
-    // const getAllUser = useCallback(async (param) => {
-    //     setLoading(true);
-
-    //     setTimeout(() => {
-    //         let filtered = [...DUMMY_ACTIVE_USERS];
-
-    //         if (param.search) {
-    //             filtered = filtered.filter(user =>
-    //                 user.name.toLowerCase().includes(param.search.toLowerCase()) ||
-    //                 user.email.toLowerCase().includes(param.search.toLowerCase())
-    //             );
-    //         }
-
-    //         if (param.role) {
-    //             filtered = filtered.filter(user => user.role === param.role);
-    //         }
-
-    //         if (param.sort) {
-    //             filtered.sort((a, b) => {
-    //                 if (a[param.sort] < b[param.sort]) return param.order === "asc" ? -1 : 1;
-    //                 if (a[param.sort] > b[param.sort]) return param.order === "asc" ? 1 : -1;
-    //                 return 0;
-    //             });
-    //         }
-
-    //         const start = (param.page - 1) * param.size;
-    //         const end = start + param.size;
-    //         const paginated = filtered.slice(start, end);
-
-    //         setApp002UserData(paginated);
-    //         setApp002UserTotalData(filtered.length);
-    //         app002SetTotalPage(Math.ceil(filtered.length / param.size));
-
-    //         setLoading(false);
-    //     }, 500);
-    // }, []);
-
-
-
     // Data From API Deleted User
 
     const getAllDeletedUser = useCallback(async (param) => {
-        // toast.dismiss()
+        toast.dismissAll()
         setLoading(true);
         try {
             const response = await getUserDeleted(param);
             setApp002UserData(response?.data?.users ? response.data.users : []);
             setApp002UserTotalData(response?.data?.count_data ? response.data.count_data : 0);
-
-
             app002SetTotalPage(response?.data?.total_pages ? response.data?.total_pages : 0);
         } catch (error) {
-            toast.error("Gagal mengambil data");
+            toast.error("System is unavailable, please try again later.");
         } finally {
             setLoading(false);
         }
     });
-
-    // const getAllDeletedUser = useCallback(async (param) => {
-    //     setLoading(true);
-
-    //     setTimeout(() => {
-    //         let filtered = [...DUMMY_DELETED_USERS];
-
-    //         if (param.search) {
-    //             filtered = filtered.filter(user =>
-    //                 user.name.toLowerCase().includes(param.search.toLowerCase())
-    //             );
-    //         }
-
-    //         if (param.role) {
-    //             filtered = filtered.filter(user => user.role === param.role);
-    //         }
-
-    //         if (param.sort) {
-    //             filtered.sort((a, b) => {
-    //                 if (a[param.sort] < b[param.sort]) return param.order === "asc" ? -1 : 1;
-    //                 if (a[param.sort] > b[param.sort]) return param.order === "asc" ? 1 : -1;
-    //                 return 0;
-    //             });
-    //         }
-
-    //         const start = (param.page - 1) * param.size;
-    //         const end = start + param.size;
-    //         const paginated = filtered.slice(start, end);
-
-    //         setApp002UserData(paginated);
-    //         setApp002UserTotalData(filtered.length);
-    //         app002SetTotalPage(Math.ceil(filtered.length / param.size));
-
-    //         setLoading(false);
-    //     }, 500);
-    // }, []);
 
     useEffect(() => {
         if (app002p01Page) {
@@ -406,7 +329,7 @@ const MasterUser = () => {
 
     const app002HandleDeleteUser = () => {
         if (app002UserDeleteData.user_id) {
-            toast.dismiss()
+            toast.dismissAll()
             deleteUserAction(app002UserDeleteData)
         }
     }
@@ -438,7 +361,7 @@ const MasterUser = () => {
     }
     const app002HandleRestoreUser = () => {
         if (app002UserRestoreData.user_id) {
-            toast.dismiss()
+            toast.dismissAll()
             restoreUserAction(app002UserRestoreData)
         }
     }

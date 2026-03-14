@@ -166,7 +166,7 @@ const MasterDevice = () => {
 
     // Data From API Active Device
     const getAllDevice = useCallback(async (param) => {
-        // toast.dismiss()
+        toast.dismissAll()
         setLoadingData(true);
         try {
             const response = await getDevice(param);
@@ -174,7 +174,8 @@ const MasterDevice = () => {
             setApp004DeviceTotalData(response?.data?.count_data ? response.data.count_data : 0);
             app004SetTotalPage(response?.data?.total_pages ? response.data?.total_pages : 0);
         } catch (error) {
-            toast.error("Gagal mengambil data");
+            if (error.isUnauthorized) return;
+            toast.error("System is unavailable, please try again later.");
         } finally {
             setLoadingData(false);
         }
@@ -197,7 +198,7 @@ const MasterDevice = () => {
         { value: "OFFLINE", label: "Offline" },
     ])
     const getAllCluster = useCallback(async (param) => {
-        // toast.dismiss()
+        // toast.dismissAll()
         setLoadingData(true);
         try {
             const response = await getCluster(param);
@@ -207,7 +208,7 @@ const MasterDevice = () => {
             })) : []);
         } catch (error) {
             console.log(error)
-            // toast.error("Gagal mengambil data");
+            // toast.error("System is unavailable, please try again later.");
         } finally {
             setLoadingData(false);
         }
@@ -293,7 +294,7 @@ const MasterDevice = () => {
     }
     const app004HandleDeleteDevice = () => {
         if (app004DeviceDeleteData.device_id) {
-            toast.dismiss()
+            toast.dismissAll()
             deleteDeviceAction(app004DeviceDeleteData)
         }
     }

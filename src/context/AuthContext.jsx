@@ -41,11 +41,12 @@ export const AuthProvider = ({ children }) => {
     };
 
     const clearAuthState = () => {
-        // debugger
         setUser(null);
         setLoginStatus(false);
         localStorage.removeItem("user");
         localStorage.removeItem("loginStatus");
+        toast.dismissAll();
+        toast.error("Token expired, please login to continue.");
     }
 
     useEffect(() => {

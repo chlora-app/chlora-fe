@@ -126,7 +126,7 @@ const MasterCluster = () => {
 
     // Data From API Active Cluster
     const getAllCluster = useCallback(async (param) => {
-        // toast.dismiss()
+        toast.dismissAll()
         setLoading(true);
         try {
             const response = await getCluster(param);
@@ -134,7 +134,7 @@ const MasterCluster = () => {
             setApp003ClusterTotalData(response?.data?.count_data ? response.data.count_data : 0);
             app003SetTotalPage(response?.data?.total_pages ? response.data?.total_pages : 0);
         } catch (error) {
-            toast.error("Gagal mengambil data");
+            toast.error("System is unavailable, please try again later.");
         } finally {
             setLoading(false);
         }
@@ -186,7 +186,7 @@ const MasterCluster = () => {
     }
     const app003HandleDeleteCluster = () => {
         if (app003ClusterDeleteData.cluster_id) {
-            toast.dismiss()
+            toast.dismissAll()
             deleteClusterAction(app003ClusterDeleteData)
         }
     }
