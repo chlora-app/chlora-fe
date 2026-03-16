@@ -52,12 +52,12 @@ const MasterUserAdd = (props) => {
     try {
       const response = await addUser(param)
       if (response.status === 201 || response.status === 200) {
-        toast.success("User Has Been Successfully Added.", { id: toastId })
+        toast.success("User added successfully.", { id: toastId })
         props.refreshTable();
         handleClose()
       }
     } catch (error) {
-      toast.error(error?.response?.data?.message || "System is Unavailable. Please Try Again Later.", { id: toastId })
+      toast.error(error?.response?.data?.message || "System is unavailable, please try again later.", { id: toastId })
     } finally {
       setLoadingSpinner(false)
     }

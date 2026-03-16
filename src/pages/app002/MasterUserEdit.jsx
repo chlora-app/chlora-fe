@@ -68,7 +68,7 @@ const MasterUserEdit = (props) => {
                 handleClose()
             }
         } catch (error) {
-            toast.error(error?.response?.data?.message || "System is Unavailable. Please Try Again Later.", { id: toastId })
+            toast.error(error?.response?.data?.message || "System is unavailable, please try again later.", { id: toastId })
         } finally {
             setLoadingSpinner(false)
         }
@@ -116,6 +116,25 @@ const MasterUserEdit = (props) => {
                             </Field>
 
                             <Field className="gap-2">
+                                <FieldLabel>Name</FieldLabel>
+                                <InputGroup className="overflow-hidden">
+                                    <InputGroupInput
+                                        id="name"
+                                        name="name"
+                                        type="text"
+                                        placeholder="Enter full name"
+                                        value={app002p03ValidInput.values.name}
+                                        onChange={app002p03ValidInput.handleChange}
+                                        onBlur={app002p03ValidInput.handleBlur}
+                                        aria-invalid={app002p03ValidInput.touched.name && !!app002p03ValidInput.errors.name}
+                                    />
+                                </InputGroup>
+                                {app002p03ValidInput.touched.name && app002p03ValidInput.errors.name && (
+                                    <FieldDescription className="text-xs text-destructive">{app002p03ValidInput.errors.name}</FieldDescription>
+                                )}
+                            </Field>
+
+                            <Field className="gap-2">
                                 <FieldLabel>Email Address</FieldLabel>
                                 <InputGroup className="overflow-hidden">
                                     <InputGroupInput
@@ -135,31 +154,11 @@ const MasterUserEdit = (props) => {
                             </Field>
 
                             <Field className="gap-2">
-                                <FieldLabel>Name</FieldLabel>
-                                <InputGroup className="overflow-hidden">
-                                    <InputGroupInput
-                                        id="name"
-                                        name="name"
-                                        type="text"
-                                        placeholder="Enter full name"
-                                        value={app002p03ValidInput.values.name}
-                                        onChange={app002p03ValidInput.handleChange}
-                                        onBlur={app002p03ValidInput.handleBlur}
-                                        aria-invalid={app002p03ValidInput.touched.name && !!app002p03ValidInput.errors.name}
-                                    />
-                                </InputGroup>
-                                {app002p03ValidInput.touched.name && app002p03ValidInput.errors.name && (
-                                    <FieldDescription className="text-xs text-destructive">{app002p03ValidInput.errors.name}</FieldDescription>
-                                )}
-                            </Field>
-
-
-                            <Field className="gap-2">
                                 <FieldLabel>Role</FieldLabel>
                                 <Select
                                     value={app002p03ValidInput.values.role}
                                     onValueChange={(val) => app002p03ValidInput.setFieldValue("role", val)}
-                                    // onOpenChange={() => app002p03ValidInput.setFieldTouched("role", true)}
+                                // onOpenChange={() => app002p03ValidInput.setFieldTouched("role", true)}
                                 >
                                     <SelectTrigger
                                         id="role"

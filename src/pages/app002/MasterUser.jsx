@@ -41,8 +41,6 @@ const MasterUser = () => {
 
     const handleTabChange = (param) => {
         setSelectedTab(param);
-        setRole("")
-        setSearch("")
         refreshTable()
     };
 
@@ -103,107 +101,46 @@ const MasterUser = () => {
             text: "Action",
             headerAlign: "center",
             bodyAlign: 'center',
-            formatter: (cellContent, app002UserData) => (
-                <div className="flex items-center justify-center gap-2">
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button
-                                variant="outline"
-                                size="icon-sm"
-                                onClick={() => handleModalEditOpen(app002UserData)}
-                            >
-                                <SquarePen
-                                    className="text-blue-500"
-                                />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Edit</p>
-                        </TooltipContent>
-                    </Tooltip>
-
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button
-                                variant="outline"
-                                size="icon-sm"
-                                onClick={() => handleModalDeleteOpen(app002UserData)}
-                            >
-                                <Trash2 className="text-red-500" />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Delete</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </div>
-            ),
-        },
-    ];
-
-    const app002UserDeletedColumns = [
-        {
-            dataField: "userId",
-            text: "User ID",
-            sort: true,
-            headerAlign: "center",
-            bodyAlign: "center",
-        },
-        {
-            dataField: "name",
-            text: "Name",
-            sort: true,
-            headerAlign: "left",
-            bodyAlign: "left",
-        },
-        {
-            dataField: "email",
-            text: "Email",
-            sort: true,
-            headerAlign: "left",
-            bodyAlign: "left",
-        },
-        {
-            dataField: "role",
-            text: "Role",
-            sort: true,
-            headerAlign: "center",
-            bodyAlign: "center",
-            formatter: (cellContent) => {
-                switch (cellContent) {
-                    case "ADMIN":
-                        return <Badge className="bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300">Admin</Badge>
-                    case "USER":
-                        return <Badge className="bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300">User</Badge>
-                    case "STAFF":
-                        return <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">Staff</Badge>
+            formatter: (cellContent, row) => {
+                switch (selectedTab) {
+                    case "active":
+                        return (
+                            <div className="flex items-center justify-center gap-2">
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button variant="outline" size="icon-sm" onClick={() => handleModalEditOpen(row)}>
+                                            <SquarePen className="text-blue-500" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent><p>Edit</p></TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button variant="outline" size="icon-sm" onClick={() => handleModalDeleteOpen(row)}>
+                                            <Trash2 className="text-red-500" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent><p>Delete</p></TooltipContent>
+                                </Tooltip>
+                            </div>
+                        )
+                    case "inactive":
+                        return (
+                            <div className="flex items-center justify-center">
+                                <Tooltip>
+                                    <TooltipTrigger asChild>
+                                        <Button variant="ghost" size="icon-sm" onClick={() => handleModalRestoreOpen(row)}>
+                                            <RotateCcw className="text-blue-500" />
+                                        </Button>
+                                    </TooltipTrigger>
+                                    <TooltipContent><p>Restore</p></TooltipContent>
+                                </Tooltip>
+                            </div>
+                        )
                     default:
-                        return <Badge className="bg-muted text-muted-foreground">{cellContent}</Badge>
+                        return null
                 }
             }
-        },
-        {
-            dataField: "action",
-            text: "Action",
-            headerAlign: "center",
-            formatter: (cellContent, app002UserData) => (
-                <div className="flex items-center justify-center">
-                    <Tooltip>
-                        <TooltipTrigger asChild>
-                            <Button
-                                variant="ghost"
-                                size="icon-sm"
-                                onClick={() => handleModalRestoreOpen(app002UserData)}
-                            >
-                                <RotateCcw className="text-blue-500" />
-                            </Button>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                            <p>Restore</p>
-                        </TooltipContent>
-                    </Tooltip>
-                </div>
-            ),
         },
     ];
 
@@ -244,10 +181,9 @@ const MasterUser = () => {
         } finally {
             setLoading(false);
         }
-    });
+    }, []);
 
     // Data From API Deleted User
-
     const getAllDeletedUser = useCallback(async (param) => {
         setLoading(true);
         try {
@@ -260,7 +196,7 @@ const MasterUser = () => {
         } finally {
             setLoading(false);
         }
-    });
+    }, []);
 
     useEffect(() => {
         if (app002p01Page) {
@@ -297,7 +233,6 @@ const MasterUser = () => {
     const refreshTable = useCallback(() => {
         setSearch("");
         setRole("");
-
         setApp002UserDataParam({
             page: 1,
             size: 10,
@@ -327,7 +262,7 @@ const MasterUser = () => {
 
     const app002HandleDeleteUser = () => {
         if (app002UserDeleteData.userId) {
-            toast.dismissAll()
+            toast.dismiss()
             deleteUserAction(app002UserDeleteData)
         }
     }
@@ -338,19 +273,19 @@ const MasterUser = () => {
             setLoading(true)
             const response = await deleteUser(param.userId)
 
-            if (response.status === 204 || response.status === 200) {
-                toast.success("User Has Been Successfully Deleted.", { id: toastId })
+            if (response.status === 204) {
+                toast.success("User deleted successfully.", { id: toastId })
                 refreshTable();
             } else {
                 toast.error("Failed to delete user.", { id: toastId })
             }
         } catch (error) {
-            toast.error(error?.response?.data?.message || "System is Unavailable. Please Try Again Later.", { id: toastId })
+            toast.error(error?.response?.data?.message || "System is unavailable, please try again later.", { id: toastId })
         } finally {
             setModalDeleteOpen(false)
             setLoading(false)
         }
-    })
+    }, [])
 
     // Form and Function Restore Modal
     const handleModalRestoreOpen = (obj) => {
@@ -359,7 +294,7 @@ const MasterUser = () => {
     }
     const app002HandleRestoreUser = () => {
         if (app002UserRestoreData.userId) {
-            toast.dismissAll()
+            toast.dismiss()
             restoreUserAction(app002UserRestoreData)
         }
     }
@@ -369,19 +304,19 @@ const MasterUser = () => {
             setLoading(true)
             const response = await restoreUser(param.userId)
 
-            if (response.status === 201 || response.status === 200) {
-                toast.success("User Has Been Successfully Restored.", { id: toastId })
+            if (response.status === 200) {
+                toast.success("User restored successfully.", { id: toastId })
                 refreshTable();
             } else {
-                toast.error(error?.response?.data?.message || "Failed to restore user.", { id: toastId })
+                toast.error("Failed to restore user.", { id: toastId })
             }
         } catch (error) {
-            toast.error(error?.response?.data?.message || "System is Unavailable. Please Try Again Later.", { id: toastId })
+            toast.error(error?.response?.data?.message || "System is unavailable, please try again later.", { id: toastId })
         } finally {
             setModalRestoreOpen(false)
             setLoading(false)
         }
-    })
+    }, [])
 
     return (
         <React.Fragment>
@@ -497,7 +432,7 @@ const MasterUser = () => {
                                     <TableCustom
                                         keyField="userId"
                                         loadingData={loading}
-                                        columns={app002UserDeletedColumns}
+                                        columns={app002UserColumns}
                                         appdata={app002UserData}
                                         appdataTotal={app002UserTotalData}
                                         totalPage={app002TotalPage}
