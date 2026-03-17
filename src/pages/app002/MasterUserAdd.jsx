@@ -16,7 +16,7 @@ const MasterUserAdd = (props) => {
 
   useEffect(() => {
     if (props.modalAddOpen) {
-      app002p02ValidInput.resetForm()
+      formik.resetForm()
     }
   }, [props.modalAddOpen])
 
@@ -24,7 +24,7 @@ const MasterUserAdd = (props) => {
     props.setModalAddOpen(false);
   }
 
-  const app002p02ValidInput = useFormik({
+  const formik = useFormik({
     initialValues:
     {
       email: "",
@@ -61,121 +61,119 @@ const MasterUserAdd = (props) => {
     } finally {
       setLoadingSpinner(false)
     }
-  })
+  }, [])
 
   return (
-    <React.Fragment>
-      <Dialog
-        open={props.modalAddOpen}
-        onOpenChange={(open) => { if (!open) handleClose() }}
+    <Dialog
+      open={props.modalAddOpen}
+      onOpenChange={(open) => { if (!open) handleClose() }}
+    >
+      <DialogContent
+        className="sm:max-w-md"
+        onInteractOutside={(e) => e.preventDefault()}
+        onOpenAutoFocus={(e) => e.preventDefault()}
       >
-        <DialogContent
-          className="sm:max-w-md"
-          onInteractOutside={(e) => e.preventDefault()}
-          onOpenAutoFocus={(e) => e.preventDefault()}
+        <DialogHeader>
+          <DialogTitle>Add User</DialogTitle>
+          <DialogDescription>Fill in the details below to create a new user account</DialogDescription>
+        </DialogHeader>
+
+        <form
+          onSubmit={formik.handleSubmit}
+          className="flex flex-col gap-6"
         >
-          <DialogHeader>
-            <DialogTitle>Add User</DialogTitle>
-            <DialogDescription>Fill in the details below to create a new user account</DialogDescription>
-          </DialogHeader>
-
-          <form
-            onSubmit={app002p02ValidInput.handleSubmit}
-            className="flex flex-col gap-6"
-          >
-            <FieldGroup className="gap-2">
-              <Field>
-                <FieldLabel>Name</FieldLabel>
-                <InputGroup className="overflow-hidden">
-                  <InputGroupInput
-                    id="name"
-                    name="name"
-                    type="text"
-                    placeholder="Enter full name"
-                    value={app002p02ValidInput.values.name}
-                    onChange={app002p02ValidInput.handleChange}
-                    onBlur={app002p02ValidInput.handleBlur}
-                    aria-invalid={app002p02ValidInput.touched.name && !!app002p02ValidInput.errors.name}
-                  />
-                </InputGroup>
-                {app002p02ValidInput.touched.name && app002p02ValidInput.errors.name && (
-                  <FieldDescription className="text-xs text-destructive">{app002p02ValidInput.errors.name}</FieldDescription>
-                )}
-              </Field>
-
-              <Field className="gap-2">
-                <FieldLabel>Email Address</FieldLabel>
-                <InputGroup className="overflow-hidden">
-                  <InputGroupInput
-                    id="email"
-                    name="email"
-                    type="text"
-                    placeholder="Enter email address"
-                    value={app002p02ValidInput.values.email}
-                    onChange={app002p02ValidInput.handleChange}
-                    onBlur={app002p02ValidInput.handleBlur}
-                    aria-invalid={app002p02ValidInput.touched.email && !!app002p02ValidInput.errors.email}
-                  />
-                </InputGroup>
-                {app002p02ValidInput.touched.email && app002p02ValidInput.errors.email && (
-                  <FieldDescription className="text-xs text-destructive">{app002p02ValidInput.errors.email}</FieldDescription>
-                )}
-              </Field>
-
-              <Field>
-                <FieldLabel>Role</FieldLabel>
-                <Select
-                  value={app002p02ValidInput.values.role}
-                  onValueChange={(val) => app002p02ValidInput.setFieldValue("role", val)}
-                >
-                  <SelectTrigger
-                    id="role"
-                    aria-invalid={app002p02ValidInput.touched.role && !!app002p02ValidInput.errors.role}
-                  >
-                    <SelectValue placeholder="Select a role" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {props.roleOptions.map((item) => (
-                        <SelectItem key={item.value} value={item.value}>
-                          {item.label}
-                        </SelectItem>
-                      ))}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                {app002p02ValidInput.touched.role && app002p02ValidInput.errors.role && (
-                  <FieldDescription className="text-xs text-destructive">{app002p02ValidInput.errors.role}</FieldDescription>
-                )}
-              </Field>
-            </FieldGroup>
-
-            <DialogFooter className="flex-row gap-2">
-              <DialogClose asChild>
-                <Button
-                  variant="outline"
-                  className="flex-1"
-                  onClick={handleClose}
-                >
-                  Cancel
-                </Button>
-              </DialogClose>
-              <Button
-                type="submit"
-                className="flex-1"
-                disabled={loadingSpinner}
-              >
-                <Spinner
-                  data-icon="inline-start"
-                  className={loadingSpinner ? "flex" : 'hidden'}
+          <FieldGroup className="gap-2">
+            <Field>
+              <FieldLabel>Name</FieldLabel>
+              <InputGroup className="overflow-hidden">
+                <InputGroupInput
+                  id="name"
+                  name="name"
+                  type="text"
+                  placeholder="Enter full name"
+                  value={formik.values.name}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  aria-invalid={formik.touched.name && !!formik.errors.name}
                 />
-                {loadingSpinner ? "Creating..." : "Create User"}
+              </InputGroup>
+              {formik.touched.name && formik.errors.name && (
+                <FieldDescription className="text-xs text-destructive">{formik.errors.name}</FieldDescription>
+              )}
+            </Field>
+
+            <Field className="gap-2">
+              <FieldLabel>Email Address</FieldLabel>
+              <InputGroup className="overflow-hidden">
+                <InputGroupInput
+                  id="email"
+                  name="email"
+                  type="text"
+                  placeholder="Enter email address"
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  aria-invalid={formik.touched.email && !!formik.errors.email}
+                />
+              </InputGroup>
+              {formik.touched.email && formik.errors.email && (
+                <FieldDescription className="text-xs text-destructive">{formik.errors.email}</FieldDescription>
+              )}
+            </Field>
+
+            <Field>
+              <FieldLabel>Role</FieldLabel>
+              <Select
+                value={formik.values.role}
+                onValueChange={(val) => formik.setFieldValue("role", val)}
+              >
+                <SelectTrigger
+                  id="role"
+                  aria-invalid={formik.touched.role && !!formik.errors.role}
+                >
+                  <SelectValue placeholder="Select a role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectGroup>
+                    {props.roleOptions.map((item) => (
+                      <SelectItem key={item.value} value={item.value}>
+                        {item.label}
+                      </SelectItem>
+                    ))}
+                  </SelectGroup>
+                </SelectContent>
+              </Select>
+              {formik.touched.role && formik.errors.role && (
+                <FieldDescription className="text-xs text-destructive">{formik.errors.role}</FieldDescription>
+              )}
+            </Field>
+          </FieldGroup>
+
+          <DialogFooter className="flex-row gap-2">
+            <DialogClose asChild>
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={handleClose}
+              >
+                Cancel
               </Button>
-            </DialogFooter>
-          </form>
-        </DialogContent>
-      </Dialog>
-    </React.Fragment>
+            </DialogClose>
+            <Button
+              type="submit"
+              className="flex-1"
+              disabled={loadingSpinner}
+            >
+              <Spinner
+                data-icon="inline-start"
+                className={loadingSpinner ? "flex" : 'hidden'}
+              />
+              {loadingSpinner ? "Creating..." : "Create User"}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
   )
 }
 

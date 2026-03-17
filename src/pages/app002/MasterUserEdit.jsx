@@ -17,16 +17,19 @@ const MasterUserEdit = (props) => {
 
     useEffect(() => {
         if (props.modalEditOpen) {
-            app002p03ValidInput.resetForm()
-            app002p03ValidInput.setFieldValue("userId", props.app002UserEditData.userId)
-            app002p03ValidInput.setFieldValue("email", props.app002UserEditData.email)
-            app002p03ValidInput.setFieldValue("name", props.app002UserEditData.name)
-            app002p03ValidInput.setFieldValue("role", props.app002UserEditData.role)
+            formik.resetForm({
+                values: {
+                    userId: props.app002UserEditData.userId,
+                    email: props.app002UserEditData.email,
+                    name: props.app002UserEditData.name,
+                    role: props.app002UserEditData.role,
+                }
+            })
         }
     }, [props.modalEditOpen])
 
     // Validation Form
-    const app002p03ValidInput = useFormik({
+    const formik = useFormik({
         initialValues:
         {
             userId: "",
@@ -36,9 +39,7 @@ const MasterUserEdit = (props) => {
         },
         validationSchema: Yup.object
             ({
-                email: Yup.string()
-                    .required("Email is required.")
-                    .matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "Please enter a valid email address."),
+                email: Yup.string().required("Email is required.").matches(/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/, "Please enter a valid email address."),
                 name: Yup.string().required("Name is required."),
                 role: Yup.string().required("Role is required."),
             }),
@@ -72,143 +73,141 @@ const MasterUserEdit = (props) => {
         } finally {
             setLoadingSpinner(false)
         }
-    })
+    }, [])
 
     return (
-        <React.Fragment>
-            <Dialog
-                open={props.modalEditOpen}
-                onOpenChange={(open) => { if (!open) handleClose() }}
+        <Dialog
+            open={props.modalEditOpen}
+            onOpenChange={(open) => { if (!open) handleClose() }}
+        >
+            <DialogContent
+                className="sm:max-w-md"
+                onInteractOutside={(e) => e.preventDefault()}
+                onOpenAutoFocus={(e) => e.preventDefault()}
             >
-                <DialogContent
-                    className="sm:max-w-md"
-                    onInteractOutside={(e) => e.preventDefault()}
-                    onOpenAutoFocus={(e) => e.preventDefault()}
+                <DialogHeader>
+                    <DialogTitle>Edit User</DialogTitle>
+                    <DialogDescription>Update the user's information below
+                    </DialogDescription>
+                </DialogHeader>
+
+                <form
+                    onSubmit={formik.handleSubmit}
+                    className="flex flex-col gap-6"
                 >
-                    <DialogHeader>
-                        <DialogTitle>Edit User</DialogTitle>
-                        <DialogDescription>Update the user's information below
-                        </DialogDescription>
-                    </DialogHeader>
-
-                    <form
-                        onSubmit={app002p03ValidInput.handleSubmit}
-                        className="flex flex-col gap-6"
-                    >
-                        <FieldGroup className="gap-2">
-                            <Field className="gap-2">
-                                <FieldLabel>User Id</FieldLabel>
-                                <InputGroup className="overflow-hidden">
-                                    <InputGroupInput
-                                        id="userId"
-                                        name="userId"
-                                        type="text"
-                                        value={app002p03ValidInput.values.userId}
-                                        onChange={app002p03ValidInput.handleChange}
-                                        onBlur={app002p03ValidInput.handleBlur}
-                                        aria-invalid={app002p03ValidInput.touched.userId && !!app002p03ValidInput.errors.userId}
-                                        disabled
-                                    />
-                                </InputGroup>
-                                {app002p03ValidInput.touched.userId && app002p03ValidInput.errors.userId && (
-                                    <FieldDescription className="text-xs text-destructive">{app002p03ValidInput.errors.userId}</FieldDescription>
-                                )}
-                            </Field>
-
-                            <Field className="gap-2">
-                                <FieldLabel>Name</FieldLabel>
-                                <InputGroup className="overflow-hidden">
-                                    <InputGroupInput
-                                        id="name"
-                                        name="name"
-                                        type="text"
-                                        placeholder="Enter full name"
-                                        value={app002p03ValidInput.values.name}
-                                        onChange={app002p03ValidInput.handleChange}
-                                        onBlur={app002p03ValidInput.handleBlur}
-                                        aria-invalid={app002p03ValidInput.touched.name && !!app002p03ValidInput.errors.name}
-                                    />
-                                </InputGroup>
-                                {app002p03ValidInput.touched.name && app002p03ValidInput.errors.name && (
-                                    <FieldDescription className="text-xs text-destructive">{app002p03ValidInput.errors.name}</FieldDescription>
-                                )}
-                            </Field>
-
-                            <Field className="gap-2">
-                                <FieldLabel>Email Address</FieldLabel>
-                                <InputGroup className="overflow-hidden">
-                                    <InputGroupInput
-                                        id="email"
-                                        name="email"
-                                        type="text"
-                                        placeholder="Enter email address"
-                                        value={app002p03ValidInput.values.email}
-                                        onChange={app002p03ValidInput.handleChange}
-                                        onBlur={app002p03ValidInput.handleBlur}
-                                        aria-invalid={app002p03ValidInput.touched.email && !!app002p03ValidInput.errors.email}
-                                    />
-                                </InputGroup>
-                                {app002p03ValidInput.touched.email && app002p03ValidInput.errors.email && (
-                                    <FieldDescription className="text-xs text-destructive">{app002p03ValidInput.errors.email}</FieldDescription>
-                                )}
-                            </Field>
-
-                            <Field className="gap-2">
-                                <FieldLabel>Role</FieldLabel>
-                                <Select
-                                    value={app002p03ValidInput.values.role}
-                                    onValueChange={(val) => app002p03ValidInput.setFieldValue("role", val)}
-                                // onOpenChange={() => app002p03ValidInput.setFieldTouched("role", true)}
-                                >
-                                    <SelectTrigger
-                                        id="role"
-                                        aria-invalid={app002p03ValidInput.touched.role && !!app002p03ValidInput.errors.role}
-                                    >
-                                        <SelectValue placeholder="Select a role" />
-                                    </SelectTrigger>
-                                    <SelectContent>
-                                        <SelectGroup>
-                                            {props.roleOptions.map((item) => (
-                                                <SelectItem key={item.value} value={item.value}>
-                                                    {item.label}
-                                                </SelectItem>
-                                            ))}
-                                        </SelectGroup>
-                                    </SelectContent>
-                                </Select>
-                                {app002p03ValidInput.touched.role && app002p03ValidInput.errors.role && (
-                                    <FieldDescription className="text-xs text-destructive">{app002p03ValidInput.errors.role}</FieldDescription>
-                                )}
-                            </Field>
-                        </FieldGroup>
-
-                        <DialogFooter className="flex-row gap-2">
-                            <DialogClose asChild>
-                                <Button
-                                    variant="outline"
-                                    className="flex-1"
-                                    onClick={handleClose}
-                                >
-                                    Cancel
-                                </Button>
-                            </DialogClose>
-                            <Button
-                                type="submit"
-                                className="flex-1"
-                                disabled={loadingSpinner}
-                            >
-                                <Spinner
-                                    data-icon="inline-start"
-                                    className={loadingSpinner ? "flex" : 'hidden'}
+                    <FieldGroup className="gap-2">
+                        <Field className="gap-2">
+                            <FieldLabel>User Id</FieldLabel>
+                            <InputGroup className="overflow-hidden">
+                                <InputGroupInput
+                                    id="userId"
+                                    name="userId"
+                                    type="text"
+                                    value={formik.values.userId}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    aria-invalid={formik.touched.userId && !!formik.errors.userId}
+                                    disabled
                                 />
-                                {loadingSpinner ? "Saving..." : "Save Changes"}
-                            </Button>
-                        </DialogFooter>
-                    </form>
+                            </InputGroup>
+                            {formik.touched.userId && formik.errors.userId && (
+                                <FieldDescription className="text-xs text-destructive">{formik.errors.userId}</FieldDescription>
+                            )}
+                        </Field>
 
-                </DialogContent>
-            </Dialog>
-        </React.Fragment >
+                        <Field className="gap-2">
+                            <FieldLabel>Name</FieldLabel>
+                            <InputGroup className="overflow-hidden">
+                                <InputGroupInput
+                                    id="name"
+                                    name="name"
+                                    type="text"
+                                    placeholder="Enter full name"
+                                    value={formik.values.name}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    aria-invalid={formik.touched.name && !!formik.errors.name}
+                                />
+                            </InputGroup>
+                            {formik.touched.name && formik.errors.name && (
+                                <FieldDescription className="text-xs text-destructive">{formik.errors.name}</FieldDescription>
+                            )}
+                        </Field>
+
+                        <Field className="gap-2">
+                            <FieldLabel>Email Address</FieldLabel>
+                            <InputGroup className="overflow-hidden">
+                                <InputGroupInput
+                                    id="email"
+                                    name="email"
+                                    type="text"
+                                    placeholder="Enter email address"
+                                    value={formik.values.email}
+                                    onChange={formik.handleChange}
+                                    onBlur={formik.handleBlur}
+                                    aria-invalid={formik.touched.email && !!formik.errors.email}
+                                />
+                            </InputGroup>
+                            {formik.touched.email && formik.errors.email && (
+                                <FieldDescription className="text-xs text-destructive">{formik.errors.email}</FieldDescription>
+                            )}
+                        </Field>
+
+                        <Field className="gap-2">
+                            <FieldLabel>Role</FieldLabel>
+                            <Select
+                                value={formik.values.role}
+                                onValueChange={(val) => formik.setFieldValue("role", val)}
+                            // onOpenChange={() => formik.setFieldTouched("role", true)}
+                            >
+                                <SelectTrigger
+                                    id="role"
+                                    aria-invalid={formik.touched.role && !!formik.errors.role}
+                                >
+                                    <SelectValue placeholder="Select a role" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        {props.roleOptions.map((item) => (
+                                            <SelectItem key={item.value} value={item.value}>
+                                                {item.label}
+                                            </SelectItem>
+                                        ))}
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                            {formik.touched.role && formik.errors.role && (
+                                <FieldDescription className="text-xs text-destructive">{formik.errors.role}</FieldDescription>
+                            )}
+                        </Field>
+                    </FieldGroup>
+
+                    <DialogFooter className="flex-row gap-2">
+                        <DialogClose asChild>
+                            <Button
+                                variant="outline"
+                                className="flex-1"
+                                onClick={handleClose}
+                            >
+                                Cancel
+                            </Button>
+                        </DialogClose>
+                        <Button
+                            type="submit"
+                            className="flex-1"
+                            disabled={loadingSpinner}
+                        >
+                            <Spinner
+                                data-icon="inline-start"
+                                className={loadingSpinner ? "flex" : 'hidden'}
+                            />
+                            {loadingSpinner ? "Saving..." : "Save Changes"}
+                        </Button>
+                    </DialogFooter>
+                </form>
+
+            </DialogContent>
+        </Dialog>
     )
 }
 

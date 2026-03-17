@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import RootPageCustom from "../../components/common/RootPageCustom";
 import TableCustom from "../../components/common/TableCustom";
 import { getUser, deleteUser, getUserDeleted, restoreUser } from "../../utils/ListApi";
@@ -15,10 +15,14 @@ import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip
 import { Badge } from "@/components/ui/badge";
 import toast from "react-hot-toast";
 
+const roleOptions = [
+    { value: "ADMIN", label: "Admin" },
+    { value: "USER", label: "User" },
+    { value: "STAFF", label: "Staff" },
+];
+
 const MasterUser = () => {
-    const [firstRender, setFirstRender] = useState(false)
     const [loading, setLoading] = useState(false)
-    const [app002p01Page, setApp002p01Page] = useState(true);
     const [modalAddOpen, setModalAddOpen] = useState(false);
     const [modalEditOpen, setModalEditOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
@@ -32,12 +36,6 @@ const MasterUser = () => {
     const [app002UserEditData, setApp002UserEditData] = useState(null);
     const [app002UserDeleteData, setApp002UserDeleteData] = useState(null)
     const [app002UserRestoreData, setApp002UserRestoreData] = useState(null)
-
-    const roleOptions = [
-        { value: "ADMIN", label: "Admin" },
-        { value: "USER", label: "User" },
-        { value: "STAFF", label: "Staff" },
-    ];
 
     const handleTabChange = (param) => {
         setSelectedTab(param);
@@ -55,7 +53,7 @@ const MasterUser = () => {
         }
     )
 
-    const app002UserColumns = [
+    const app002UserColumns = useMemo(() => [
         {
             dataField: "userId",
             text: "User ID",
@@ -142,7 +140,7 @@ const MasterUser = () => {
                 }
             }
         },
-    ];
+    ], [selectedTab]);
 
     const handleChangePage = (newPage) => {
         setApp002UserDataParam(prev => ({
@@ -168,30 +166,14 @@ const MasterUser = () => {
         }));
     };
 
-    // Data From API Active User
-    const getAllUser = useCallback(async (param) => {
+    const fetchUser = useCallback(async (tab, param) => {
         setLoading(true);
         try {
-            const response = await getUser(param);
-            setApp002UserData(response?.data?.users ? response.data.users : []);
-            setApp002UserTotalData(response?.data?.countData ? response.data.countData : 0);
-            app002SetTotalPage(response?.data?.totalPages ? response.data?.totalPages : 0);
-        } catch (error) {
-            toast.error("System is unavailable, please try again later.")
-        } finally {
-            setLoading(false);
-        }
-    }, []);
-
-    // Data From API Deleted User
-    const getAllDeletedUser = useCallback(async (param) => {
-        setLoading(true);
-        try {
-            const response = await getUserDeleted(param);
-            setApp002UserData(response?.data?.users ? response.data.users : []);
-            setApp002UserTotalData(response?.data?.countData ? response.data.countData : 0);
-            app002SetTotalPage(response?.data?.totalPages ? response.data?.totalPages : 0);
-        } catch (error) {
+            const response = await (tab === "active" ? getUser(param) : getUserDeleted(param));
+            setApp002UserData(response?.data?.users ?? []);
+            setApp002UserTotalData(response?.data?.countData ?? 0);
+            app002SetTotalPage(response?.data?.totalPages ?? 0);
+        } catch {
             toast.error("System is unavailable, please try again later.");
         } finally {
             setLoading(false);
@@ -199,13 +181,7 @@ const MasterUser = () => {
     }, []);
 
     useEffect(() => {
-        if (app002p01Page) {
-            if (selectedTab == "active") {
-                getAllUser(app002UserDataParam);
-            } else if (selectedTab == "inactive") {
-                getAllDeletedUser(app002UserDataParam);
-            }
-        }
+        fetchUser(selectedTab, app002UserDataParam);
     }, [app002UserDataParam, selectedTab]);
 
 
@@ -243,156 +219,89 @@ const MasterUser = () => {
         });
     }, []);
 
-    // Form Add Modal
-    const handleModalAddOpen = () => {
-        setModalAddOpen(true)
-    }
-
     // Form Edit Modal
     const handleModalEditOpen = (obj) => {
         setModalEditOpen(true)
         setApp002UserEditData(obj)
     }
 
-    // Form and Function Delete Modal
+    // Form Additional Modal
     const handleModalDeleteOpen = (obj) => {
         setModalDeleteOpen(true)
         setApp002UserDeleteData(obj)
     }
 
-    const app002HandleDeleteUser = () => {
-        if (app002UserDeleteData.userId) {
-            toast.dismiss()
-            deleteUserAction(app002UserDeleteData)
-        }
-    }
-
-    const deleteUserAction = useCallback(async (param) => {
-        const toastId = toast.loading("Loading...")
-        try {
-            setLoading(true)
-            const response = await deleteUser(param.userId)
-
-            if (response.status === 204) {
-                toast.success("User deleted successfully.", { id: toastId })
-                refreshTable();
-            } else {
-                toast.error("Failed to delete user.", { id: toastId })
-            }
-        } catch (error) {
-            toast.error(error?.response?.data?.message || "System is unavailable, please try again later.", { id: toastId })
-        } finally {
-            setModalDeleteOpen(false)
-            setLoading(false)
-        }
-    }, [])
-
-    // Form and Function Restore Modal
     const handleModalRestoreOpen = (obj) => {
         setModalRestoreOpen(true)
         setApp002UserRestoreData(obj)
     }
-    const app002HandleRestoreUser = () => {
-        if (app002UserRestoreData.userId) {
-            toast.dismiss()
-            restoreUserAction(app002UserRestoreData)
-        }
-    }
-    const restoreUserAction = useCallback(async (param) => {
-        const toastId = toast.loading("Loading...")
-        try {
-            setLoading(true)
-            const response = await restoreUser(param.userId)
 
-            if (response.status === 200) {
-                toast.success("User restored successfully.", { id: toastId })
-                refreshTable();
+    const handleUserAction = useCallback(async (type, param) => {
+        const toastId = toast.loading("Loading...")
+        setLoading(true)
+        try {
+            const response = await (type === "delete" ? deleteUser(param.userId) : restoreUser(param.userId))
+            if (response?.status === 204 || response?.status === 200) {
+                toast.success(`User ${type}d successfully.`, { id: toastId })
+                refreshTable()
             } else {
-                toast.error("Failed to restore user.", { id: toastId })
+                toast.error(`Failed to ${type} user.`, { id: toastId })
             }
         } catch (error) {
             toast.error(error?.response?.data?.message || "System is unavailable, please try again later.", { id: toastId })
         } finally {
-            setModalRestoreOpen(false)
+            type === "delete" ? setModalDeleteOpen(false) : setModalRestoreOpen(false)
             setLoading(false)
         }
     }, [])
 
-    return (
-        <React.Fragment>
-            <RootPageCustom
-                setFirstRender={setFirstRender}
-            >
-                <div className={`${app002p01Page ? "flex" : "hidden"} flex-col gap-2`}>
-                    <div className="flex items-center justify-between px-6 mb-2">
-                        <div>
-                            <h1 className="text-xl font-semibold">User Management</h1>
-                            <p className="text-sm text-muted-foreground">Manage and monitor system user accounts</p>
-                        </div>
-                        <Button
-                            size="sm"
-                            onClick={handleModalAddOpen}
-                            className={selectedTab === "active" ? "flex" : "hidden"}
-                        >
-                            <Plus />
-                            <span className="hidden sm:inline">Add User</span>
-                        </Button>
-                    </div>
+    const app002HandleDeleteUser = () => app002UserDeleteData?.userId && handleUserAction("delete", app002UserDeleteData)
+    const app002HandleRestoreUser = () => app002UserRestoreData?.userId && handleUserAction("restore", app002UserRestoreData)
 
-                    <Card>
-                        <CardContent>
-                            <Tabs value={selectedTab} onValueChange={handleTabChange}>
-                                <div className="flex flex-col mb-2">
-                                    <div className="flex items-center justify-between gap-2">
-                                        <TabsList className="w-full sm:w-fit">
-                                            <TabsTrigger value="active" className="flex-1 sm:flex-none">
-                                                <UserRoundCheck className="mr-1 h-4 w-4" />Active
-                                            </TabsTrigger>
-                                            <TabsTrigger value="inactive" className="flex-1 sm:flex-none">
-                                                <UserRoundX className="mr-1 h-4 w-4" />Inactive
-                                            </TabsTrigger>
-                                        </TabsList>
-                                        <div className="hidden sm:flex items-center gap-2">
-                                            <div className="relative">
-                                                <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
-                                                <Input
-                                                    placeholder="Search..."
-                                                    value={search}
-                                                    onChange={(e) => setSearch(e.target.value)}
-                                                    onKeyDown={(e) => { if (e.key === "Enter") handleSearchState() }}
-                                                    className="pl-8 w-48"
-                                                />
-                                            </div>
-                                            <Select value={role} onValueChange={handleRoleChange}>
-                                                <SelectTrigger className="w-36">
-                                                    <SelectValue placeholder="All Roles" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    <SelectGroup>
-                                                        <SelectItem value="all">All Roles</SelectItem>
-                                                        {roleOptions.map((item) => (
-                                                            <SelectItem key={item.value} value={item.value}>
-                                                                {item.label}
-                                                            </SelectItem>
-                                                        ))}
-                                                    </SelectGroup>
-                                                </SelectContent>
-                                            </Select>
-                                        </div>
-                                    </div>
-                                    <div className="flex items-center gap-2 sm:hidden mt-2">
-                                        <div className="relative flex-1">
+    return (
+        <RootPageCustom>
+            <div className="flex flex-col gap-2">
+                <div className="flex items-center justify-between px-6 mb-2">
+                    <div>
+                        <h1 className="text-xl font-semibold">User Management</h1>
+                        <p className="text-sm text-muted-foreground">Manage and monitor system user accounts</p>
+                    </div>
+                    <Button
+                        size="sm"
+                        onClick={() => setModalAddOpen(true)}
+                        className={selectedTab === "active" ? "flex" : "hidden"}
+                    >
+                        <Plus />
+                        <span className="hidden sm:inline">Add User</span>
+                    </Button>
+                </div>
+
+                <Card>
+                    <CardContent>
+                        <Tabs value={selectedTab} onValueChange={handleTabChange}>
+                            <div className="flex flex-col mb-2">
+                                <div className="flex items-center justify-between gap-2">
+                                    <TabsList className="w-full sm:w-fit">
+                                        <TabsTrigger value="active" className="flex-1 sm:flex-none">
+                                            <UserRoundCheck className="mr-1 h-4 w-4" />Active
+                                        </TabsTrigger>
+                                        <TabsTrigger value="inactive" className="flex-1 sm:flex-none">
+                                            <UserRoundX className="mr-1 h-4 w-4" />Inactive
+                                        </TabsTrigger>
+                                    </TabsList>
+                                    <div className="hidden sm:flex items-center gap-2">
+                                        <div className="relative">
                                             <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
                                             <Input
                                                 placeholder="Search..."
                                                 value={search}
                                                 onChange={(e) => setSearch(e.target.value)}
                                                 onKeyDown={(e) => { if (e.key === "Enter") handleSearchState() }}
-                                                className="pl-8 w-full"
+                                                className="pl-8 w-48"
                                             />
                                         </div>
                                         <Select value={role} onValueChange={handleRoleChange}>
-                                            <SelectTrigger className="w-32">
+                                            <SelectTrigger className="w-36">
                                                 <SelectValue placeholder="All Roles" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -408,89 +317,116 @@ const MasterUser = () => {
                                         </Select>
                                     </div>
                                 </div>
+                                <div className="flex items-center gap-2 sm:hidden mt-2">
+                                    <div className="relative flex-1">
+                                        <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+                                        <Input
+                                            placeholder="Search..."
+                                            value={search}
+                                            onChange={(e) => setSearch(e.target.value)}
+                                            onKeyDown={(e) => { if (e.key === "Enter") handleSearchState() }}
+                                            className="pl-8 w-full"
+                                        />
+                                    </div>
+                                    <Select value={role} onValueChange={handleRoleChange}>
+                                        <SelectTrigger className="w-32">
+                                            <SelectValue placeholder="All Roles" />
+                                        </SelectTrigger>
+                                        <SelectContent>
+                                            <SelectGroup>
+                                                <SelectItem value="all">All Roles</SelectItem>
+                                                {roleOptions.map((item) => (
+                                                    <SelectItem key={item.value} value={item.value}>
+                                                        {item.label}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectGroup>
+                                        </SelectContent>
+                                    </Select>
+                                </div>
+                            </div>
 
-                                <TabsContent value="active">
-                                    <TableCustom
-                                        keyField="userId"
-                                        loadingData={loading}
-                                        columns={app002UserColumns}
-                                        appdata={app002UserData}
-                                        appdataTotal={app002UserTotalData}
-                                        totalPage={app002TotalPage}
-                                        rowsPerPageOption={[5, 10, 20, 25]}
-                                        page={app002UserDataParam.page - 1}
-                                        rowsPerPage={app002UserDataParam.size}
-                                        sortField={app002UserDataParam.sort}
-                                        sortOrder={app002UserDataParam.order}
-                                        onPageChange={handleChangePage}
-                                        onRowsPerPageChange={handleChangeRowsPerPage}
-                                        onRequestSort={handleRequestSort}
-                                    />
-                                </TabsContent>
+                            <TabsContent value="active">
+                                <TableCustom
+                                    keyField="userId"
+                                    loadingData={loading}
+                                    columns={app002UserColumns}
+                                    appdata={app002UserData}
+                                    appdataTotal={app002UserTotalData}
+                                    totalPage={app002TotalPage}
+                                    rowsPerPageOption={[5, 10, 20, 25]}
+                                    page={app002UserDataParam.page - 1}
+                                    rowsPerPage={app002UserDataParam.size}
+                                    sortField={app002UserDataParam.sort}
+                                    sortOrder={app002UserDataParam.order}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                    onRequestSort={handleRequestSort}
+                                />
+                            </TabsContent>
 
-                                <TabsContent value="inactive">
-                                    <TableCustom
-                                        keyField="userId"
-                                        loadingData={loading}
-                                        columns={app002UserColumns}
-                                        appdata={app002UserData}
-                                        appdataTotal={app002UserTotalData}
-                                        totalPage={app002TotalPage}
-                                        rowsPerPageOption={[5, 10, 20, 25]}
-                                        page={app002UserDataParam.page - 1}
-                                        rowsPerPage={app002UserDataParam.size}
-                                        sortField={app002UserDataParam.sort}
-                                        sortOrder={app002UserDataParam.order}
-                                        onPageChange={handleChangePage}
-                                        onRowsPerPageChange={handleChangeRowsPerPage}
-                                        onRequestSort={handleRequestSort}
-                                    />
-                                </TabsContent>
-                            </Tabs>
-                        </CardContent>
-                    </Card>
-                </div>
+                            <TabsContent value="inactive">
+                                <TableCustom
+                                    keyField="userId"
+                                    loadingData={loading}
+                                    columns={app002UserColumns}
+                                    appdata={app002UserData}
+                                    appdataTotal={app002UserTotalData}
+                                    totalPage={app002TotalPage}
+                                    rowsPerPageOption={[5, 10, 20, 25]}
+                                    page={app002UserDataParam.page - 1}
+                                    rowsPerPage={app002UserDataParam.size}
+                                    sortField={app002UserDataParam.sort}
+                                    sortOrder={app002UserDataParam.order}
+                                    onPageChange={handleChangePage}
+                                    onRowsPerPageChange={handleChangeRowsPerPage}
+                                    onRequestSort={handleRequestSort}
+                                />
+                            </TabsContent>
+                        </Tabs>
+                    </CardContent>
+                </Card>
+            </div>
 
-                {modalAddOpen && (
-                    <MasterUserAdd
-                        modalAddOpen={modalAddOpen}
-                        setModalAddOpen={setModalAddOpen}
-                        refreshTable={refreshTable}
-                        roleOptions={roleOptions}
-                    />
-                )}
+            {modalAddOpen && (
+                <MasterUserAdd
+                    modalAddOpen={modalAddOpen}
+                    setModalAddOpen={setModalAddOpen}
+                    refreshTable={refreshTable}
+                    roleOptions={roleOptions}
+                />
+            )}
 
-                {modalEditOpen && (
-                    <MasterUserEdit
-                        modalEditOpen={modalEditOpen}
-                        setModalEditOpen={setModalEditOpen}
-                        refreshTable={refreshTable}
-                        app002UserEditData={app002UserEditData}
-                        roleOptions={roleOptions}
-                    />
-                )}
+            {modalEditOpen && (
+                <MasterUserEdit
+                    modalEditOpen={modalEditOpen}
+                    setModalEditOpen={setModalEditOpen}
+                    refreshTable={refreshTable}
+                    app002UserEditData={app002UserEditData}
+                    roleOptions={roleOptions}
+                />
+            )}
 
-                {modalDeleteOpen && (
-                    <PopupDeleteAndRestore
-                        status={"delete"}
-                        modalOpen={modalDeleteOpen}
-                        modalClose={() => setModalDeleteOpen(false)}
-                        loading={loading}
-                        onClick={app002HandleDeleteUser}
-                    />
-                )}
+            {modalDeleteOpen && (
+                <PopupDeleteAndRestore
+                    status={"delete"}
+                    modalOpen={modalDeleteOpen}
+                    modalClose={() => setModalDeleteOpen(false)}
+                    loading={loading}
+                    onClick={app002HandleDeleteUser}
+                />
+            )}
 
-                {modalRestoreOpen && (
-                    <PopupDeleteAndRestore
-                        status={"restore"}
-                        modalOpen={modalRestoreOpen}
-                        modalClose={() => setModalRestoreOpen(false)}
-                        loading={loading}
-                        onClick={app002HandleRestoreUser}
-                    />
-                )}
-            </RootPageCustom>
-        </React.Fragment >
+            {modalRestoreOpen && (
+                <PopupDeleteAndRestore
+                    status={"restore"}
+                    modalOpen={modalRestoreOpen}
+                    modalClose={() => setModalRestoreOpen(false)}
+                    loading={loading}
+                    onClick={app002HandleRestoreUser}
+                />
+            )}
+        </RootPageCustom>
     );
 }
 
