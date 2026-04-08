@@ -34,7 +34,7 @@ const Dashboard = () => {
                     {/* First Row Wrapper */}
                     <div className="grid grid-cols-12 gap-4">
 
-                        <Card className="flex flex-row items-center col-span-3 bg-yellow-300/10 p-4">
+                        <Card className="flex flex-row items-center col-span-3 bg-yellow-300/10 px-4">
                             <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-amber-500/10">
                                 <AlertTriangle className="text-amber-400" />
                             </div>
@@ -56,7 +56,7 @@ const Dashboard = () => {
                         </Card>
 
 
-                        <Card className="flex flex-row items-center col-span-3  bg-green-300/10 p-4">
+                        <Card className="flex flex-row items-center col-span-3  bg-green-300/10 px-4">
                             <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-green-500/10">
                                 <CalendarDays className="text-green-400" />
                             </div>
@@ -68,7 +68,7 @@ const Dashboard = () => {
                             </div>
                         </Card>
 
-                        <Card className=" flex flex-row items-center col-span-6 bg-orange-300/10 p-4">
+                        <Card className=" flex flex-row items-center col-span-6 bg-orange-300/10 px-4">
                             <div className="flex items-center justify-center w-12 h-12 rounded-xl bg-orange-500/10">
                                 <Clock className="text-orange-400" />
                             </div>

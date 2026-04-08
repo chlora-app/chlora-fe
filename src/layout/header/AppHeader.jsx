@@ -23,12 +23,18 @@ const AppHeader = () => {
             </div>
 
             <div className="flex flex-row gap-8 items-center">
-                <div className="flex items-center gap-2">
-                    <CalendarDays size={18} />
-                    <p>{formatDate(date)}</p>
+                <div className="flex items-center gap-2 text-muted-foreground">
+                    <Button
+                        className="rounded-full hover:bg-transparent hover:text-inherit cursor-default pointer-events-none"
+                        variant="ghost"
+                        size="icon-sm"
+                    >
+                        <CalendarDays />
+                    </Button>
+                    <p className="text-sm font-medium">{formatDate(date)}</p>
                 </div>
 
-                <Button className="rounded-full" variant="outline" size="icon">
+                <Button className="rounded-full" variant="outline" size="icon-sm">
                     <Bell />
                 </Button>
             </div>
