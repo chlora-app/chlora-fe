@@ -160,7 +160,7 @@ const Notification = (props) => {
             </PopoverTrigger>
 
             <PopoverContent align="end" className="sm:w-100 p-0">
-                <PopoverHeader className="flex flex-row items-center justify-between px-4 py-2 border-b-2">
+                <PopoverHeader className="flex flex-row items-center justify-between px-4 py-2 border-b">
                     <div className="flex flex-row items-center gap-2">
                         <Bell size={18} />
                         <span className="text-base">Notifications</span>
@@ -198,7 +198,7 @@ const Notification = (props) => {
                             {visibleData.map((data) => (
                                 <div
                                     key={data.id}
-                                    className="flex flex-row gap-4 px-4 py-3 cursor-pointer border-b last:border-b-0 hover:bg-muted/50 transition-colors"
+                                    className="flex flex-row gap-2 px-4 py-3 cursor-pointer border-b last:border-b-0 hover:bg-muted/50 transition-colors"
                                     onClick={() => markAsRead(data.id)}
                                 >
                                     <div className="flex flex-row gap-4 flex-1 min-w-0">
@@ -213,7 +213,11 @@ const Notification = (props) => {
                                     </div>
 
                                     <div className="flex items-center">
-                                        {!data.read && <Dot className="text-red-500" />}
+
+                                        <span
+                                            className={`w-2.5 h-2.5 rounded-full inline-block ${data.read ? "bg-transparent" : "bg-red-500"
+                                                }`}
+                                        />
                                     </div>
                                 </div>
                             ))}

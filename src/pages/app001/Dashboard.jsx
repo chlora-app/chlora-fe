@@ -6,7 +6,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { dashboardData } from "./dummyData";
 import { CalendarDays } from "lucide-react";
 import { Separator } from "@/components/ui/separator";
-import potDashboard from "../../assets/images/potDashboard.webp"
 import PotCard from "./PotCard";
 
 
@@ -106,26 +105,10 @@ const Dashboard = () => {
                     {/* Mapping show for 4 card by data */}
 
                     <div className="grid grid-cols-12 gap-6">
-                        {[...Array(4)].map((_, index) => (
-                            <PotCard
-                                key={index}
-                                name={`Pot ${String.fromCharCode(65 + index)}`}
-                                status="Online"
-                                image={potDashboard}
-                            />
-                        ))}
-
+                        <PotCard
+                            potData={allData}
+                        />
                     </div>
-
-                    <div className="flex justify-end gap-4">
-                        <Button>
-                            Previous
-                        </Button>
-                        <Button>
-                            Next
-                        </Button>
-                    </div>
-
                 </div>
 
 
