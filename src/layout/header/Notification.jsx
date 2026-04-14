@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button"
 import { Popover, PopoverContent, PopoverHeader, PopoverTrigger } from "@/components/ui/popover"
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { BatteryLow, Bell, BellOff, CheckCheck, TriangleAlert } from "lucide-react"
-import React, { useCallback, useEffect, useRef, useState } from "react"
+import React, { useCallback, useEffect, useState, useRef } from "react"
 import { getNotication, subscribeNotificationSse, updateNotificationAll, updateNotificationOne } from "@/utils/ListApi";
 import { ToasterCustom } from "@/components/common/ToasterCustom";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -11,6 +11,7 @@ const DEFAULT_NOTIF_SHOW = 5
 
 const Notification = (props) => {
     // -------------------- Declare All State -------------------- //
+    const notifIsOpenRef = useRef(false)
     const [notificationData, setNotificationData] = useState([])
     const [notificationUnread, setNotificationUnread] = useState(0)
     const [notificationVisibleCount, setNotificationVisibleCount] = useState(DEFAULT_NOTIF_SHOW)
@@ -18,7 +19,6 @@ const Notification = (props) => {
     const hasMoreNotification = notificationVisibleCount < notificationData.length
     const [flagHasOpened, setFlagHasOpened] = useState(false)
     const [flagLoadingNotif, setFlagLoadingNotif] = useState(false)
-    const flagIsFirstRender = useRef(true)
     // -------------------- Declare All State -------------------- //
 
     // -------------------- Fetch API -------------------- //
@@ -26,13 +26,8 @@ const Notification = (props) => {
     const fetchNotification = useCallback(async () => {
         try {
             const response = await getNotication()
-            if (flagIsFirstRender.current) {
-                setNotificationUnread(response?.data?.notifications?.filter((data) => !data.isRead).length)
-                flagIsFirstRender.current = false
-            } else {
-                setNotificationData(response?.data?.notifications ?? [])
-                setNotificationUnread(response?.data?.notifications?.filter((data) => !data.isRead).length)
-            }
+            setNotificationData(response?.data?.notifications ?? [])
+            setNotificationUnread(response?.data?.notifications?.filter((data) => !data.isRead).length)
         } catch (error) {
             ToasterCustom.error("System is unavailable, please try again later.")
         }
@@ -53,14 +48,21 @@ const Notification = (props) => {
             try {
                 const jsonResponse = JSON.parse(event.data)
                 setNotificationUnread(jsonResponse?.unreadCount)
+                debugger
                 if (jsonResponse?.notification) {
                     ToasterCustom.info(jsonResponse?.notification?.message, {
                         icon: jsonResponse?.notification?.notificationType === "BATTERY"
                             ? <BatteryLow size={16} className="text-red-500" />
                             : <TriangleAlert size={16} className="text-yellow-500" />
                     })
+                    if (notifIsOpenRef.current) {
+                        setNotificationData(prev => {
+                            const exists = prev.some(n => n.id === jsonResponse?.notification?.id)
+                            if (exists) return prev
+                            return [jsonResponse.notification, ...prev]
+                        })
+                    }
                 }
-                fetchNotification()
             }
             catch (error) {
                 console.log(error)
@@ -178,7 +180,10 @@ const Notification = (props) => {
     // -------------------- Date Converter For Display -------------------- //
 
     return (
-        <Popover onOpenChange={handleOpenChange}>
+        <Popover onOpenChange={(open) => {
+            notifIsOpenRef.current = open
+            handleOpenChange(open)
+        }}>
             <PopoverTrigger asChild>
                 <Button className="rounded-full relative" variant="outline" size="icon-sm">
                     <Bell />
