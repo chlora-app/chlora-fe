@@ -142,6 +142,8 @@ const Notification = (props) => {
     }, [notificationData, notificationUnread])
     // -------------------- Read All Notification -------------------- //
 
+
+    // Tinggal fix ke ISO timestamp mentah and buat useeffect agar update terus timenya just now, 5 minutes ago, / gimana sesuai Ui yg bagus
     // -------------------- Date Converter For Display -------------------- //
     const formatNotifDate = (data) => {
         const [time, day, month, year] = data.split(" ")
@@ -197,7 +199,7 @@ const Notification = (props) => {
                 </Button>
             </PopoverTrigger>
 
-            <PopoverContent align="end" className="sm:w-100 p-0">
+            <PopoverContent align="end" className="sm:w-110 p-0">
                 <PopoverHeader className="flex flex-row items-center justify-between px-4 py-2 border-b-2">
                     <div className="flex flex-row items-center gap-2">
                         <Bell size={18} />
@@ -228,11 +230,12 @@ const Notification = (props) => {
                 >
                     {flagLoadingNotif ? (
                         <>
-                            {[...Array(4)].map((_, i) => (
-                                <div key={i} className="flex items-center gap-3 px-4 py-3 border-b last:border-b-0">
-                                    <Skeleton className="h-8 w-8 rounded-full shrink-0" />
+                            {[...Array(10)].map((_, i) => (
+                                <div key={i} className="flex items-center gap-3 px-4 py-3.5 border-b last:border-b-0">
+                                    <Skeleton className="h-9 w-9 rounded-full shrink-0" />
                                     <div className="flex-1 space-y-2 min-w-0">
                                         <Skeleton className="h-3.5 w-11/12" />
+                                        <Skeleton className="h-3.5 w-9/12 sm:hidden" />
                                         <Skeleton className="h-3 w-2/12" />
                                     </div>
                                     <div className="shrink-0 flex items-center">
