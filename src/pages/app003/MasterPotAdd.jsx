@@ -8,9 +8,9 @@ import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
 import { Spinner } from "@/components/ui/spinner";
 import { Button } from "@/components/ui/button";
 import { ToasterCustom } from "@/components/common/ToasterCustom";
-import { addCluster } from "../../utils/ListApi";
+import { addPot } from "../../utils/ListApi";
 
-const MasterClusterAdd = (props) => {
+const MasterPotAdd = (props) => {
   const [loadingSpinner, setLoadingSpinner] = useState(false);
 
   useEffect(() => {
@@ -27,26 +27,26 @@ const MasterClusterAdd = (props) => {
   const formik = useFormik({
     initialValues:
     {
-      clusterName: "",
+      potName: "",
     },
     validationSchema: Yup.object
       ({
-        clusterName: Yup.string().required("Cluster Name is required."),
+        potName: Yup.string().required("Pot Name is required."),
       }),
 
     onSubmit: async (values, { setSubmitting }) => {
       setSubmitting(true)
       setLoadingSpinner(true)
-      await SaveClusterAction(values)
+      await SavePotAction(values)
       setSubmitting(false)
     },
   });
 
-  const SaveClusterAction = useCallback(async (param) => {
+  const SavePotAction = useCallback(async (param) => {
     try {
-      await ToasterCustom.promise(addCluster(param), {
-        loading: "Creating cluster...",
-        success: "Cluster added successfully.",
+      await ToasterCustom.promise(addPot(param), {
+        loading: "Creating pot...",
+        success: "Pot added successfully.",
         error: (err) => err?.response?.data?.message || "System is unavailable, please try again later."
       })
       props.refreshTable();
@@ -69,8 +69,8 @@ const MasterClusterAdd = (props) => {
         onOpenAutoFocus={(e) => e.preventDefault()}
       >
         <DialogHeader>
-          <DialogTitle>Add Cluster</DialogTitle>
-          <DialogDescription>Add a new cluster to the system</DialogDescription>
+          <DialogTitle>Add Pot</DialogTitle>
+          <DialogDescription>Add a new pot to the system</DialogDescription>
         </DialogHeader>
 
         <form
@@ -79,21 +79,21 @@ const MasterClusterAdd = (props) => {
         >
           <FieldGroup className="gap-2">
             <Field className="gap-2">
-              <FieldLabel>Cluster Name</FieldLabel>
+              <FieldLabel>Pot Name</FieldLabel>
               <InputGroup className="overflow-hidden">
                 <InputGroupInput
-                  id="clusterName"
-                  name="clusterName"
+                  id="potName"
+                  name="potName"
                   type="text"
-                  placeholder="Enter cluster name"
-                  value={formik.values.clusterName}
+                  placeholder="Enter pot name"
+                  value={formik.values.potName}
                   onChange={formik.handleChange}
                   onBlur={formik.handleBlur}
-                  aria-invalid={formik.touched.clusterName && !!formik.errors.clusterName}
+                  aria-invalid={formik.touched.potName && !!formik.errors.potName}
                 />
               </InputGroup>
-              {formik.touched.clusterName && formik.errors.clusterName && (
-                <FieldDescription className="text-xs text-destructive">{formik.errors.clusterName}</FieldDescription>
+              {formik.touched.potName && formik.errors.potName && (
+                <FieldDescription className="text-xs text-destructive">{formik.errors.potName}</FieldDescription>
               )}
             </Field>
           </FieldGroup>
@@ -117,7 +117,7 @@ const MasterClusterAdd = (props) => {
                 data-icon="inline-start"
                 className={loadingSpinner ? "flex" : 'hidden'}
               />
-              {loadingSpinner ? "Saving..." : "Add Cluster"}
+              {loadingSpinner ? "Saving..." : "Add Pot"}
             </Button>
           </DialogFooter>
         </form>
@@ -126,10 +126,10 @@ const MasterClusterAdd = (props) => {
   )
 }
 
-MasterClusterAdd.propTypes = {
+MasterPotAdd.propTypes = {
   modalAddOpen: PropTypes.any,
   setModalAddOpen: PropTypes.any,
   refreshTable: PropTypes.any,
 };
 
-export default MasterClusterAdd
+export default MasterPotAdd

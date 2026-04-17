@@ -47,7 +47,7 @@ const RegisterForm = () => {
 
     const handleRegisterSuccess = (resetForm) => {
         setTimeout(() => {
-            const id = ToasterCustom.loading("Redirecting...")
+            const id = ToasterCustom.loading("Redirecting to login...")
             setTimeout(() => {
                 ToasterCustom.dismiss(id)
                 resetForm()

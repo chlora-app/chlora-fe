@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import RootPageCustom from "../../components/common/RootPageCustom";
 import TableCustom from "../../components/common/TableCustom";
-import { getDevice, deleteDevice, getComboCluster } from "../../utils/ListApi";
+import { getDevice, deleteDevice, getComboPot } from "../../utils/ListApi";
 import PopupDeleteAndRestore from "../../components/common/PopupDeleteAndRestore";
 import { Trash2, SquarePen, Plus, Search } from "lucide-react";
-import MasterDeviceAdd from "./MasterDeviceAdd";
 import MasterDeviceEdit from "./MasterDeviceEdit";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,11 +14,6 @@ import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { handleApiError } from "@/utils/ErrorHandler";
 
-const deviceTypeOption = [
-    { value: "Actuator", label: "Actuator" },
-    { value: "Sensor", label: "Sensor" },
-]
-
 const statusOptions = [
     { value: "ONLINE", label: "Online" },
     { value: "OFFLINE", label: "Offline" },
@@ -27,7 +21,6 @@ const statusOptions = [
 
 const MasterDevice = () => {
     const [loading, setLoading] = useState(false);
-    const [modalAddOpen, setModalAddOpen] = useState(false);
     const [modalEditOpen, setModalEditOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
     const [app004DeviceData, setApp004DeviceData] = useState([]);
@@ -35,8 +28,10 @@ const MasterDevice = () => {
     const [app004TotalPage, app004SetTotalPage] = useState(0)
     const [search, setSearch] = useState("")
     const [status, setStatus] = useState("")
-    const [cluster, setCluster] = useState("")
-    const [clusterOption, setClusterOption] = useState([])
+    const [pot, setPot] = useState("")
+    const [potOption, setPotOption] = useState([
+        { label: "Unassigned", value: "UNASSIGNED" }
+    ])
     const [app004DeviceEditData, setApp004DeviceEditData] = useState(null);
     const [app004DeviceDeleteData, setApp004DeviceDeleteData] = useState(null)
 
@@ -48,7 +43,7 @@ const MasterDevice = () => {
             order: "asc",
             search: "",
             status: "",
-            clusterId: "",
+            potId: "",
         }
     )
 
@@ -68,18 +63,19 @@ const MasterDevice = () => {
             bodyAlign: 'left',
         },
         {
-            dataField: "deviceType",
-            text: "Device Type",
-            sort: true,
-            headerAlign: "center",
-            bodyAlign: 'center',
-        },
-        {
-            dataField: "clusterName",
-            text: "Cluster Name",
+            dataField: "potName",
+            text: "Pot Name",
             sort: true,
             headerAlign: "left",
             bodyAlign: 'left',
+            formatter: (cellContent) => {
+                switch (cellContent) {
+                    case null:
+                        return "Unassigned"
+                    default:
+                        return cellContent
+                }
+            }
         },
         {
             dataField: "status",
@@ -177,18 +173,21 @@ const MasterDevice = () => {
         fetchDevice(app004DeviceDataParam);
     }, [app004DeviceDataParam]);
 
-    // List Combo Cluster 
-    const fetchCluster = useCallback(async () => {
+    // List Combo Pot 
+    const fetchPot = useCallback(async () => {
         try {
-            const response = await getComboCluster();
-            setClusterOption(response?.data?.list ?? []);
+            const response = await getComboPot();
+            setPotOption([
+                { label: "Unassigned", value: "UNASSIGNED" },
+                ...(response?.data?.list ?? [])
+            ]);
         } catch (error) {
             if (handleApiError(error)) return
         }
     }, []);
 
     useEffect(() => {
-        fetchCluster()
+        fetchPot()
     }, [])
 
     const handleSearchState = () => {
@@ -211,21 +210,21 @@ const MasterDevice = () => {
         }))
     }
 
-    const handleClusterChange = (e) => {
+    const handlePotChange = (e) => {
         const switchValue = e === "all" ? "" : e
-        setCluster(e)
+        setPot(e)
         setSearch("")
         setApp004DeviceDataParam(prev => ({
             ...prev,
             "page": 1,
-            "clusterId": switchValue,
+            "potId": switchValue,
             "search": ""
         }))
     }
 
     const refreshTable = useCallback(() => {
         setSearch("");
-        setCluster("")
+        setPot("")
         setStatus("")
         setApp004DeviceDataParam({
             page: 1,
@@ -234,7 +233,7 @@ const MasterDevice = () => {
             order: "asc",
             search: "",
             status: "",
-            clusterId: ""
+            potId: ""
         });
     }, []);
 
@@ -273,8 +272,6 @@ const MasterDevice = () => {
         <RootPageCustom
             title={"Device Management"}
             desc={"Manage and monitor registered devices"}
-            setModalAddOpen={setModalAddOpen}
-            buttonLabel={"Add Device"}
         >
             <div className="flex flex-col gap-2">
                 <Card>
@@ -291,14 +288,14 @@ const MasterDevice = () => {
                                 />
                             </div>
 
-                            <Select value={cluster} onValueChange={handleClusterChange}>
+                            <Select value={pot} onValueChange={handlePotChange}>
                                 <SelectTrigger className="flex-1 sm:w-36 sm:flex-none">
-                                    <SelectValue placeholder="All Cluster" />
+                                    <SelectValue placeholder="All Pot" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                        <SelectItem value="all">All Cluster</SelectItem>
-                                        {clusterOption.map((item) => (
+                                        <SelectItem value="all">All Pot</SelectItem>
+                                        {potOption.map((item) => (
                                             <SelectItem key={item.value} value={item.value}>
                                                 {item.label}
                                             </SelectItem>
@@ -344,17 +341,6 @@ const MasterDevice = () => {
                 </Card>
             </div >
 
-            {modalAddOpen && (
-                <MasterDeviceAdd
-                    modalAddOpen={modalAddOpen}
-                    setModalAddOpen={setModalAddOpen}
-                    refreshTable={refreshTable}
-                    clusterOption={clusterOption}
-                    deviceTypeOption={deviceTypeOption}
-                >
-                </MasterDeviceAdd>
-            )}
-
             {
                 modalEditOpen && (
                     <MasterDeviceEdit
@@ -362,8 +348,7 @@ const MasterDevice = () => {
                         setModalEditOpen={setModalEditOpen}
                         refreshTable={refreshTable}
                         app004DeviceEditData={app004DeviceEditData}
-                        clusterOption={clusterOption}
-                        deviceTypeOption={deviceTypeOption}
+                        potOption={potOption}
                         statusOption={statusOptions}
                     />
                 )

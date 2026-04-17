@@ -17,12 +17,13 @@ const MasterDeviceEdit = (props) => {
 
     useEffect(() => {
         if (props.modalEditOpen) {
+                    console.log("Edit Data", props.app004DeviceEditData) // cek isinya
+
             app004p03ValidInput.resetForm({
                 values: {
                     deviceId: props.app004DeviceEditData.deviceId,
                     deviceName: props.app004DeviceEditData.deviceName,
-                    deviceType: props.app004DeviceEditData.deviceType,
-                    clusterId: props.app004DeviceEditData.clusterId,
+                    potId: props.app004DeviceEditData.potId,
                     status: props.app004DeviceEditData.status,
                 }
             })
@@ -34,15 +35,13 @@ const MasterDeviceEdit = (props) => {
         initialValues:
         {
             deviceName: "",
-            deviceType: "",
-            clusterId: "",
+            potId: "",
             status: "",
         },
         validationSchema: Yup.object
             ({
                 deviceName: Yup.string().required("Device Name is required."),
-                deviceType: Yup.string().required("Device Type is required."),
-                clusterId: Yup.string().required("Cluster Name is required."),
+                potId: Yup.string().required("Pot Name is required."),
                 status: Yup.string().required("Status is required."),
             }),
 
@@ -55,11 +54,11 @@ const MasterDeviceEdit = (props) => {
     });
 
     const EditDeviceAction = useCallback(async (param) => {
+        debugger
         try {
             await ToasterCustom.promise(editDevice(param.deviceId, {
                 deviceName: param.deviceName,
-                deviceType: param.deviceType,
-                clusterId: param.clusterId,
+                potId: param.potId,
                 status: param.status
             }),
                 {
@@ -136,21 +135,20 @@ const MasterDeviceEdit = (props) => {
                         </Field>
 
                         <Field>
-                            <FieldLabel>Device Type</FieldLabel>
+                            <FieldLabel>Pot Name</FieldLabel>
                             <Select
-                                value={app004p03ValidInput.values.deviceType}
-                                onValueChange={(val) => app004p03ValidInput.setFieldValue("deviceType", val)}
-                            // onOpenChange={() => app004p03ValidInput.setFieldTouched("deviceType", true)}
+                                value={app004p03ValidInput.values.potId}
+                                onValueChange={(val) => app004p03ValidInput.setFieldValue("potId", val)}
                             >
                                 <SelectTrigger
-                                    id="deviceType"
-                                    aria-invalid={app004p03ValidInput.touched.deviceType && !!app004p03ValidInput.errors.deviceType}
+                                    id="potId"
+                                    aria-invalid={app004p03ValidInput.touched.potId && !!app004p03ValidInput.errors.potId}
                                 >
-                                    <SelectValue placeholder="Select device type" />
+                                    <SelectValue placeholder="Select Pot Name" />
                                 </SelectTrigger>
                                 <SelectContent>
                                     <SelectGroup>
-                                        {props.deviceTypeOption.map((item) => (
+                                        {props.potOption.map((item) => (
                                             <SelectItem key={item.value} value={item.value}>
                                                 {item.label}
                                             </SelectItem>
@@ -158,36 +156,8 @@ const MasterDeviceEdit = (props) => {
                                     </SelectGroup>
                                 </SelectContent>
                             </Select>
-                            {app004p03ValidInput.touched.deviceType && app004p03ValidInput.errors.deviceType && (
-                                <FieldDescription className="text-xs text-destructive">{app004p03ValidInput.errors.deviceType}</FieldDescription>
-                            )}
-                        </Field>
-
-                        <Field>
-                            <FieldLabel>Cluster Name</FieldLabel>
-                            <Select
-                                value={app004p03ValidInput.values.clusterId}
-                                onValueChange={(val) => app004p03ValidInput.setFieldValue("clusterId", val)}
-                            // onOpenChange={() => app004p03ValidInput.setFieldTouched("deviceType", true)}
-                            >
-                                <SelectTrigger
-                                    id="clusterId"
-                                    aria-invalid={app004p03ValidInput.touched.clusterId && !!app004p03ValidInput.errors.clusterId}
-                                >
-                                    <SelectValue placeholder="Select Cluster Name" />
-                                </SelectTrigger>
-                                <SelectContent>
-                                    <SelectGroup>
-                                        {props.clusterOption.map((item) => (
-                                            <SelectItem key={item.value} value={item.value}>
-                                                {item.label}
-                                            </SelectItem>
-                                        ))}
-                                    </SelectGroup>
-                                </SelectContent>
-                            </Select>
-                            {app004p03ValidInput.touched.clusterId && app004p03ValidInput.errors.clusterId && (
-                                <FieldDescription className="text-xs text-destructive">{app004p03ValidInput.errors.clusterId}</FieldDescription>
+                            {app004p03ValidInput.touched.potId && app004p03ValidInput.errors.potId && (
+                                <FieldDescription className="text-xs text-destructive">{app004p03ValidInput.errors.potId}</FieldDescription>
                             )}
                         </Field>
 
@@ -196,7 +166,6 @@ const MasterDeviceEdit = (props) => {
                             <Select
                                 value={app004p03ValidInput.values.status}
                                 onValueChange={(val) => app004p03ValidInput.setFieldValue("status", val)}
-                            // onOpenChange={() => app004p03ValidInput.setFieldTouched("deviceType", true)}
                             >
                                 <SelectTrigger
                                     id="status"
@@ -252,9 +221,8 @@ MasterDeviceEdit.propTypes = {
     modalEditOpen: PropTypes.any,
     setModalEditOpen: PropTypes.any,
     refreshTable: PropTypes.any,
-    app004ClusterEditData: PropTypes.any,
-    clusterOption: PropTypes.any,
-    deviceTypeOption: PropTypes.any,
+    app004DeviceEditData: PropTypes.any,
+    potOption: PropTypes.any,
 };
 
 export default MasterDeviceEdit

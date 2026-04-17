@@ -1,9 +1,8 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import RootPageCustom from "../../components/common/RootPageCustom";
 import TableCustom from "../../components/common/TableCustom";
-import { getCluster, deleteCluster } from "../../utils/ListApi";
-import MasterClusterAdd from "./MasterClusterAdd";
-import MasterClusterEdit from "./MasterClusterEdit";
+import MasterPotAdd from "./MasterPotAdd";
+import MasterPotEdit from "./MasterPotEdit";
 import PopupDeleteAndRestore from "../../components/common/PopupDeleteAndRestore";
 import { Trash2, SquarePen, Plus, Search } from "lucide-react";
 import { ToasterCustom } from "@/components/common/ToasterCustom";
@@ -12,19 +11,22 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Tooltip, TooltipContent, TooltipTrigger } from "@/components/ui/tooltip";
 import { handleApiError } from "@/utils/ErrorHandler";
+import { getPot, deletePot } from "../../utils/ListApi";
+import { Badge } from "@/components/ui/badge";
 
-const MasterCluster = () => {
+const MasterPot = () => {
     const [loading, setLoading] = useState(false)
     const [modalAddOpen, setModalAddOpen] = useState(false);
     const [modalEditOpen, setModalEditOpen] = useState(false);
     const [modalDeleteOpen, setModalDeleteOpen] = useState(false);
-    const [app003ClusterEditData, setApp003ClusterEditData] = useState(null);
-    const [app003ClusterDeleteData, setApp003ClusterDeleteData] = useState(null)
-    const [app003ClusterData, setApp003ClusterData] = useState([]);
-    const [app003ClusterTotalData, setApp003ClusterTotalData] = useState(0)
+    const [app003PotEditData, setApp003PotEditData] = useState(null);
+    const [app003PotDeleteData, setApp003PotDeleteData] = useState(null)
+
+    const [app003PotData, setApp003PotData] = useState([]);
+    const [app003PotTotalData, setApp003PotTotalData] = useState(0)
     const [app003TotalPage, app003SetTotalPage] = useState(0)
     const [search, setSearch] = useState("")
-    const [app003ClusterDataParam, setApp003ClusterDataParam] = useState(
+    const [app003PotDataParam, setApp003PotDataParam] = useState(
         {
             page: 1,
             size: 10,
@@ -34,41 +36,49 @@ const MasterCluster = () => {
         }
     )
 
-    const app003ClusterColumns = useMemo(() => [
+    const app003PotColumns = useMemo(() => [
         {
-            dataField: "clusterId",
-            text: "Cluster ID",
+            dataField: "potId",
+            text: "Pot ID",
             sort: true,
             headerAlign: "center",
             bodyAlign: 'center',
         },
         {
-            dataField: "clusterName",
-            text: "Cluster Name",
+            dataField: "potName",
+            text: "Pot Name",
             sort: true,
             headerAlign: "center",
             bodyAlign: 'center',
         },
         {
-            dataField: "totalDevices",
-            text: "Total Device",
+            dataField: "isMonitored",
+            text: "Monitored",
             sort: true,
             headerAlign: "center",
             bodyAlign: 'center',
+            formatter: (cellContent) => {
+                switch (cellContent) {
+                    case true:
+                        return <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">True</Badge>
+                    default:
+                        return <Badge className="bg-sky-50 text-red-700 dark:bg-red-950 dark:text-red-300">False</Badge>
+                }
+            }
         },
         {
             dataField: "action",
             text: "Action",
             headerAlign: "center",
             bodyAlign: 'left',
-            formatter: (cellContent, app003ClusterData) => (
+            formatter: (cellContent, app003PotData) => (
                 <div className="flex items-center justify-center gap-2">
                     <Tooltip>
                         <TooltipTrigger asChild>
                             <Button
                                 variant="outline"
                                 size="icon-sm"
-                                onClick={() => handleModalEditOpen(app003ClusterData)}
+                                onClick={() => handleModalEditOpen(app003PotData)}
                             >
                                 <SquarePen
                                     className="text-blue-500"
@@ -85,7 +95,7 @@ const MasterCluster = () => {
                             <Button
                                 variant="outline"
                                 size="icon-sm"
-                                onClick={() => handleModalDeleteOpen(app003ClusterData)}
+                                onClick={() => handleModalDeleteOpen(app003PotData)}
                             >
                                 <Trash2 className="text-red-500" />
                             </Button>
@@ -100,14 +110,14 @@ const MasterCluster = () => {
     ], []);
 
     const handleChangePage = (newPage) => {
-        setApp003ClusterDataParam(prev => ({
+        setApp003PotDataParam(prev => ({
             ...prev,
             page: newPage + 1
         }));
     };
 
     const handleChangeRowsPerPage = (newRowsPerPage) => {
-        setApp003ClusterDataParam(prev => ({
+        setApp003PotDataParam(prev => ({
             ...prev,
             size: newRowsPerPage,
             page: 1
@@ -115,7 +125,7 @@ const MasterCluster = () => {
     };
 
     const handleRequestSort = (property, order) => {
-        setApp003ClusterDataParam(prev => ({
+        setApp003PotDataParam(prev => ({
             ...prev,
             sort: property,
             order: order,
@@ -123,13 +133,13 @@ const MasterCluster = () => {
         }));
     };
 
-    // Data From API Active Cluster
-    const fetchCluster = useCallback(async (param) => {
+    // Fetch List Pot
+    const fetchPot = useCallback(async (param) => {
         setLoading(true);
         try {
-            const response = await getCluster(param);
-            setApp003ClusterData(response?.data?.clusters ?? []);
-            setApp003ClusterTotalData(response?.data?.countData ?? 0);
+            const response = await getPot(param);
+            setApp003PotData(response?.data?.pots ?? []);
+            setApp003PotTotalData(response?.data?.totalElements ?? 0);
             app003SetTotalPage(response?.data?.totalPages ?? 0);
         } catch (error) {
             if (handleApiError(error)) return
@@ -139,11 +149,11 @@ const MasterCluster = () => {
     }, []);
 
     useEffect(() => {
-        fetchCluster(app003ClusterDataParam);
-    }, [app003ClusterDataParam]);
+        fetchPot(app003PotDataParam);
+    }, [app003PotDataParam]);
 
     const handleSearchState = () => {
-        setApp003ClusterDataParam(prev => ({
+        setApp003PotDataParam(prev => ({
             ...prev,
             page: 1,
             search: search
@@ -153,7 +163,7 @@ const MasterCluster = () => {
 
     const refreshTable = useCallback(() => {
         setSearch("");
-        setApp003ClusterDataParam({
+        setApp003PotDataParam({
             page: 1,
             size: 10,
             sort: "",
@@ -165,22 +175,22 @@ const MasterCluster = () => {
     // Form Edit Modal
     const handleModalEditOpen = (obj) => {
         setModalEditOpen(true)
-        setApp003ClusterEditData(obj)
+        setApp003PotEditData(obj)
     }
 
     // Form Delete Modal
     const handleModalDeleteOpen = (obj) => {
         setModalDeleteOpen(true)
-        setApp003ClusterDeleteData(obj)
+        setApp003PotDeleteData(obj)
     }
 
-    const deleteClusterAction = useCallback(async (param) => {
+    const deletePotAction = useCallback(async (param) => {
         setLoading(true)
         try {
             await ToasterCustom.promise(
-                deleteCluster(param.clusterId), {
+                deletePot(param.potId), {
                 loading: "Loading...",
-                success: "Cluster deleted successfully.",
+                success: "Pot deleted successfully.",
                 error: (err) => err?.response?.data?.message || "System is unavailable, please try again later."
             }
             )
@@ -193,15 +203,15 @@ const MasterCluster = () => {
         }
     }, [])
 
-    const app003HandleDeleteCluster = () => { app003ClusterDeleteData?.clusterId && deleteClusterAction(app003ClusterDeleteData) }
+    const app003HandleDeletePot = () => { app003PotDeleteData?.potId && deletePotAction(app003PotDeleteData) }
 
 
     return (
         <RootPageCustom
-            title={"Cluster Management"}
-            desc={"Manage and monitor system clusters"}
+            title={"Pot Management"}
+            desc={"Manage and monitor system pots"}
             setModalAddOpen={setModalAddOpen}
-            buttonLabel={"Add Cluster"}
+            buttonLabel={"Add Pot"}
         >
             <div className="flex flex-col gap-2">
                 <Card>
@@ -220,17 +230,17 @@ const MasterCluster = () => {
                         </div>
 
                         <TableCustom
-                            keyField="clusterId"
+                            keyField="potId"
                             loadingData={loading}
-                            columns={app003ClusterColumns}
-                            appdata={app003ClusterData}
-                            appdataTotal={app003ClusterTotalData}
+                            columns={app003PotColumns}
+                            appdata={app003PotData}
+                            appdataTotal={app003PotTotalData}
                             totalPage={app003TotalPage}
                             rowsPerPageOption={[5, 10, 20, 25]}
-                            page={app003ClusterDataParam.page - 1}
-                            rowsPerPage={app003ClusterDataParam.size}
-                            sortField={app003ClusterDataParam.sort}
-                            sortOrder={app003ClusterDataParam.order}
+                            page={app003PotDataParam.page - 1}
+                            rowsPerPage={app003PotDataParam.size}
+                            sortField={app003PotDataParam.sort}
+                            sortOrder={app003PotDataParam.order}
                             onPageChange={handleChangePage}
                             onRowsPerPageChange={handleChangeRowsPerPage}
                             onRequestSort={handleRequestSort}
@@ -240,7 +250,7 @@ const MasterCluster = () => {
             </div>
 
             {modalAddOpen && (
-                <MasterClusterAdd
+                <MasterPotAdd
                     modalAddOpen={modalAddOpen}
                     setModalAddOpen={setModalAddOpen}
                     refreshTable={refreshTable}
@@ -248,11 +258,11 @@ const MasterCluster = () => {
             )}
 
             {modalEditOpen && (
-                <MasterClusterEdit
+                <MasterPotEdit
                     modalEditOpen={modalEditOpen}
                     setModalEditOpen={setModalEditOpen}
                     refreshTable={refreshTable}
-                    app003ClusterEditData={app003ClusterEditData}
+                    app003PotEditData={app003PotEditData}
                 />
             )}
 
@@ -262,7 +272,7 @@ const MasterCluster = () => {
                     modalOpen={modalDeleteOpen}
                     modalClose={() => setModalDeleteOpen(false)}
                     loading={loading}
-                    onClick={app003HandleDeleteCluster}
+                    onClick={app003HandleDeletePot}
                 />
             )}
 
@@ -270,4 +280,4 @@ const MasterCluster = () => {
     );
 }
 
-export default MasterCluster;
+export default MasterPot;

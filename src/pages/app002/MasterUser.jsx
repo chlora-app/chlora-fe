@@ -85,12 +85,8 @@ const MasterUser = () => {
                 switch (cellContent) {
                     case "ADMIN":
                         return <Badge className="bg-purple-50 text-purple-700 dark:bg-purple-950 dark:text-purple-300">Admin</Badge>
-                    case "USER":
-                        return <Badge className="bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300">User</Badge>
-                    case "STAFF":
-                        return <Badge className="bg-green-50 text-green-700 dark:bg-green-950 dark:text-green-300">Staff</Badge>
                     default:
-                        return <Badge className="bg-muted text-muted-foreground">{cellContent}</Badge>
+                        return <Badge className="bg-sky-50 text-sky-700 dark:bg-sky-950 dark:text-sky-300">User</Badge>
                 }
             }
         },

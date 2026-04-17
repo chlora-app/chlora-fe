@@ -18,16 +18,16 @@ export const editUser = (userId, res) => management.patch(`/users/${userId}`, re
 export const deleteUser = (userId) => management.delete(`/users/${userId}`);
 export const restoreUser = (userId) => management.post(`/users/deleted/${userId}/restore`);
 
-// app003 - Master Cluster
-export const getCluster = (params) => management.get("/clusters", { params });
-export const addCluster = (res) => management.post("/clusters", res);
-export const editCluster = (clusterId, res) => management.patch(`/clusters/${clusterId}`, res);
-export const deleteCluster = (clusterId) => management.delete(`/clusters/${clusterId}`);
-export const getComboCluster = () => management.get("/clusters/list");
+// app003 - Master Pot
+export const getPot = (params) => management.get("/pots", { params });
+export const addPot = (res) => management.post("/pots", res);
+export const editPot = (potId, res) => management.patch(`/pots/${potId}`, res);
+export const deletePot = (potId) => management.delete(`/pots/${potId}`);
+export const getComboPot = () => management.get("/pots/list");
+
 
 // app004 - Master Device
 export const getDevice = (params) => management.get("/devices", { params });
-export const addDevice = (res) => management.post("/devices", res);
 export const editDevice = (deviceId, res) => management.patch(`/devices/${deviceId}`, res);
 export const deleteDevice = (deviceId) => management.delete(`/devices/${deviceId}`);
 

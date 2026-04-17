@@ -21,7 +21,7 @@ const MenuRoutes = [
         section: "main",
         sub: [
             { path: "/app002/master/users", title: "Master User", component: LazyLoadRoutes(() => import("../pages/app002/MasterUser")) },
-            { path: "/app003/master/clusters", title: "Master Cluster", component: LazyLoadRoutes(() => import("../pages/app003/MasterCluster")) },
+            { path: "/app003/master/pots", title: "Master Pots", component: LazyLoadRoutes(() => import("../pages/app003/MasterPot")) },
             { path: "/app004/master/devices", title: "Master Device", component: LazyLoadRoutes(() => import("../pages/app004/MasterDevice")) },
         ],
     },

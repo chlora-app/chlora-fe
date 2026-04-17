@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import PropTypes from 'prop-types';
 import { useFormik } from "formik";
 import * as Yup from "yup";
-import { editCluster } from "../../utils/ListApi";
+import { editPot } from "../../utils/ListApi";
 import { Dialog, DialogClose, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { Field, FieldDescription, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { InputGroup, InputGroupInput } from "@/components/ui/input-group";
@@ -10,15 +10,15 @@ import { Button } from "@/components/ui/button";
 import { Spinner } from "@/components/ui/spinner";
 import { ToasterCustom } from "@/components/common/ToasterCustom";
 
-const MasterClusterEdit = (props) => {
+const MasterPotEdit = (props) => {
     const [loadingSpinner, setLoadingSpinner] = useState(false);
 
     useEffect(() => {
         if (props.modalEditOpen) {
             formik.resetForm({
                 values: {
-                    clusterId: props.app003ClusterEditData.clusterId,
-                    clusterName: props.app003ClusterEditData.clusterName,
+                    potId: props.app003PotEditData.potId,
+                    potName: props.app003PotEditData.potName,
                 }
             })
         }
@@ -32,31 +32,31 @@ const MasterClusterEdit = (props) => {
     const formik = useFormik({
         initialValues:
         {
-            clusterId: "",
-            clusterName: "",
+            potId: "",
+            potName: "",
         },
         validationSchema: Yup.object
             ({
-                clusterId: Yup.string().required("Cluster Id is required."),
-                clusterName: Yup.string().required("Cluster Name is required."),
+                potId: Yup.string().required("Pot Id is required."),
+                potName: Yup.string().required("Pot Name is required."),
             }),
 
         onSubmit: async (values, { setSubmitting }) => {
             setSubmitting(true)
             setLoadingSpinner(true)
-            await EditClusterAction(values)
+            await EditPotAction(values)
             setSubmitting(false)
         },
     });
 
-    const EditClusterAction = useCallback(async (param) => {
+    const EditPotAction = useCallback(async (param) => {
         try {
-            await ToasterCustom.promise(editCluster(param.clusterId, {
-                clusterName: param.clusterName,
+            await ToasterCustom.promise(editPot(param.potId, {
+                potName: param.potName,
             }),
                 {
                     loading: "Saving changes...",
-                    success: "Cluster updated successfully.",
+                    success: "Pot updated successfully.",
                     error: (err) => err?.response?.data?.message || "System is unavailable, please try again later."
                 }
             )
@@ -80,8 +80,8 @@ const MasterClusterEdit = (props) => {
                 onOpenAutoFocus={(e) => e.preventDefault()}
             >
                 <DialogHeader>
-                    <DialogTitle>Edit Cluster</DialogTitle>
-                    <DialogDescription>Update the cluster information below
+                    <DialogTitle>Edit Pot</DialogTitle>
+                    <DialogDescription>Update the pot information below
                     </DialogDescription>
                 </DialogHeader>
 
@@ -91,40 +91,40 @@ const MasterClusterEdit = (props) => {
                 >
                     <FieldGroup className="gap-2">
                         <Field className="gap-2">
-                            <FieldLabel>Cluster Id</FieldLabel>
+                            <FieldLabel>Pot Id</FieldLabel>
                             <InputGroup className="overflow-hidden">
                                 <InputGroupInput
-                                    id="clusterId"
-                                    name="clusterId"
+                                    id="potId"
+                                    name="potId"
                                     type="text"
-                                    value={formik.values.clusterId}
+                                    value={formik.values.potId}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    aria-invalid={formik.touched.clusterId && !!formik.errors.clusterId}
+                                    aria-invalid={formik.touched.potId && !!formik.errors.potId}
                                     disabled
                                 />
                             </InputGroup>
-                            {formik.touched.clusterId && formik.errors.clusterId && (
-                                <FieldDescription className="text-xs text-destructive">{formik.errors.clusterId}</FieldDescription>
+                            {formik.touched.potId && formik.errors.potId && (
+                                <FieldDescription className="text-xs text-destructive">{formik.errors.potId}</FieldDescription>
                             )}
                         </Field>
 
                         <Field className="gap-2">
-                            <FieldLabel>Cluster Name</FieldLabel>
+                            <FieldLabel>Pot Name</FieldLabel>
                             <InputGroup className="overflow-hidden">
                                 <InputGroupInput
-                                    id="clusterName"
-                                    name="clusterName"
+                                    id="potName"
+                                    name="potName"
                                     type="text"
-                                    placeholder="Enter cluster name"
-                                    value={formik.values.clusterName}
+                                    placeholder="Enter pot name"
+                                    value={formik.values.potName}
                                     onChange={formik.handleChange}
                                     onBlur={formik.handleBlur}
-                                    aria-invalid={formik.touched.clusterName && !!formik.errors.clusterName}
+                                    aria-invalid={formik.touched.potName && !!formik.errors.potName}
                                 />
                             </InputGroup>
-                            {formik.touched.clusterName && formik.errors.clusterName && (
-                                <FieldDescription className="text-xs text-destructive">{formik.errors.clusterName}</FieldDescription>
+                            {formik.touched.potName && formik.errors.potName && (
+                                <FieldDescription className="text-xs text-destructive">{formik.errors.potName}</FieldDescription>
                             )}
                         </Field>
                     </FieldGroup>
@@ -157,11 +157,11 @@ const MasterClusterEdit = (props) => {
     )
 }
 
-MasterClusterEdit.propTypes = {
+MasterPotEdit.propTypes = {
     modalEditOpen: PropTypes.any,
     setModalEditOpen: PropTypes.any,
     refreshTable: PropTypes.any,
-    app003ClusterEditData: PropTypes.any,
+    app003PotEditData: PropTypes.any,
 };
 
-export default MasterClusterEdit
+export default MasterPotEdit
