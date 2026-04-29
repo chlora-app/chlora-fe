@@ -163,11 +163,11 @@ const Dashboard = () => {
                     {/* Layout card agak eror bug */}
                     {/* Mapping show for 4 card by data */}
 
-                    {/* <div className="grid grid-cols-12 gap-6">
+                    {/* <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4"> */}
                         <PotCard
                             potData={allData}
                         />
-                    </div> */}
+                    {/* </div> */}
                 </div>
 
 

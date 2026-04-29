@@ -22,11 +22,12 @@ const PotCard = ({ potData }) => {
     }
 
     return (
-        <>
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-4">
+
             {/* Grid Cards */}
             {currentItems.map((pot) => (
-                <Card key={pot.id} className="col-span-3">
-                    <CardContent className="flex flex-col gap-2 pt-4">
+                <Card key={pot.id} className="flex w-full">
+                    <CardContent className="flex flex-col gap-2 pt-4 w-full">
                         <div className="flex justify-end">
                             <Wifi className={pot.status === "online" ? "text-green-500" : "text-gray-400"} />
                         </div>
@@ -72,7 +73,7 @@ const PotCard = ({ potData }) => {
             ))}
 
             {/* Pagination */}
-            <div className="col-span-12 flex items-center justify-between px-2">
+            <div className="col-span-full flex items-center justify-between px-2">
                 <p className="text-sm text-muted-foreground">
                     Showing {startIndex + 1}–{Math.min(startIndex + ITEMS_PER_PAGE, potList.length)} of {potList.length} pots
                 </p>
@@ -113,7 +114,7 @@ const PotCard = ({ potData }) => {
                     </Button>
                 </div>
             </div>
-        </>
+        </div>
     )
 }
 
