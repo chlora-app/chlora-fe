@@ -65,7 +65,9 @@ const PotCard = (props) => {
                             </Card>
                         </div>
 
-                        <Button variant="outline" className="w-full justify-between px-4">
+                        <Button variant="outline" className="w-full justify-between px-4"
+                            onClick={() => alert("Feature will be available soon")}
+                        >
                             View Detail
                             <ChevronRight size={14} />
                         </Button>
