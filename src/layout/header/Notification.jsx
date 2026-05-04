@@ -8,6 +8,7 @@ import { ToasterCustom } from "@/components/common/ToasterCustom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { handleApiError } from "@/utils/ErrorHandler";
 import { useAuth } from "@/context/AuthContext";
+import { formatTimeStampFull } from "@/components/common/Regex";
 
 const DEFAULT_NOTIF_SHOW = 5
 
@@ -160,33 +161,6 @@ const Notification = (props) => {
     }, [notificationData, notificationUnread])
     // -------------------- Read All Notification -------------------- //
 
-    // -------------------- Date Converter For Display -------------------- //
-    const formatNotifTime = (isoString) => {
-        const date = new Date(isoString)
-        const now = new Date()
-
-        const diffMs = now - date
-        const diffMinutes = Math.floor(diffMs / 60000)
-        const diffHours = Math.floor(diffMs / 3600000)
-
-        const isToday = now.toDateString() === date.toDateString()
-        const isYesterday = new Date(now - 86400000).toDateString() === date.toDateString()
-
-        if (isToday) {
-            if (diffMinutes < 1) return "Just now"
-            if (diffMinutes < 60) return `${diffMinutes} min ago`
-            return `${diffHours} hr ago`
-        }
-
-        if (isYesterday) return "Yesterday"
-
-        return date.toLocaleDateString([], {
-            day: "2-digit",
-            month: "short",
-            year: "numeric"
-        })
-    }
-    // -------------------- Date Converter For Display -------------------- //
 
     // -------------------- Update Time Label Every Minute -------------------- //
     useEffect(() => {
@@ -194,7 +168,6 @@ const Notification = (props) => {
         return () => clearInterval(interval)
     }, [])
     // -------------------- Update Time Label Every Minute -------------------- //
-
 
 
     return (
@@ -288,7 +261,7 @@ const Notification = (props) => {
                                             {data.message}
                                         </p>
                                         <span className="text-xs text-muted-foreground/70 mt-1 block">
-                                            {formatNotifTime(data.time, tickTime)}
+                                            {formatTimeStampFull(data.time, tickTime)}
                                         </span>
                                     </div>
                                     <div className="shrink-0 flex items-center">

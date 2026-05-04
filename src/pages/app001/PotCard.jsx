@@ -6,9 +6,10 @@ import { useState } from "react"
 
 const ITEMS_PER_PAGE = 4
 
-const PotCard = ({ potData }) => {
+const PotCard = (props) => {
+    console.log(props.potData)
     const [currentPage, setCurrentPage] = useState(1)
-    const potList = potData ?? []
+    const potList = props.potData ?? []
 
     const totalPages = Math.ceil(potList.length / ITEMS_PER_PAGE)
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE

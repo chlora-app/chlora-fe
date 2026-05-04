@@ -9,9 +9,6 @@ const Dashboard = () => {
     const { loginStatus } = useAuth()
     const [app001p01Page, setApp001p01Page] = useState(true);
 
-
-
-
     const [dashboardData, setDashboardData] = useState([])
 
     // Pot Overview Card
@@ -65,22 +62,15 @@ const Dashboard = () => {
     }, [loginStatus])
     // -------------------- Listen SSE Subscribe Dashboard -------------------- //
 
+    // -------------------- Sync Every State Based On Dashboard Data Changes -------------------- //
     useEffect(() => {
-        console.log("Check Dashboard Data : ", dashboardData)
-
         setPotOverviewData(dashboardData?.potStatus || null)
-
         setDailyAnomalyData(dashboardData?.anomalySummary?.today || null)
-
         setWeeklyAnomalyData(dashboardData?.anomalySummary?.thisWeek || null)
-
         setLatestAnomalyData(dashboardData?.anomalySummary?.lastDetected || null)
-
         setPotData(dashboardData?.pots || [])
-
     }, [dashboardData])
-
-
+    // -------------------- Sync Every State Based On Dashboard Data Changes -------------------- //
 
     return (
         <React.Fragment>
@@ -92,15 +82,9 @@ const Dashboard = () => {
                 <div className={`${app001p01Page ? "flex" : "hidden"} flex-col flex-1 gap-6 `}>
                     <div className="flex-none">
                         <SummaryCard
-                            potOnline={potOverviewData?.onlineCount}
-                            potOffline={potOverviewData?.offlineCount}
-
-                            dailyAnomalyCurrent={dailyAnomalyData?.current}
-                            dailyAnomalyPrevious={dailyAnomalyData?.previous}
-
-                            weeklyAnomalyCurrent={weeklyAnomalyData?.current}
-                            weeklyAnomalyPrevious={weeklyAnomalyData?.previous}
-
+                            potOverviewData={potOverviewData}
+                            dailyAnomalyData={dailyAnomalyData}
+                            weeklyAnomalyData={weeklyAnomalyData}
                             latestAnomalyData={latestAnomalyData}
                         />
                     </div>
@@ -109,8 +93,6 @@ const Dashboard = () => {
                         <PotCard potData={potData} />
                     </div>
                 </div>
-
-
             </RootPageCustom >
         </React.Fragment >
     );

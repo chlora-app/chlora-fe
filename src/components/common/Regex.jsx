@@ -28,7 +28,7 @@ export const formatTimeStamp = (isoString) => {
 }
 
 //  Formatter for full day
-export const formatTimeStampFull = (timestamp) => {
+export const formatTimeStampFull = (timestamp, _tick) => {
     if (!timestamp || timestamp === "-") return "-"
 
     const date = new Date(timestamp)

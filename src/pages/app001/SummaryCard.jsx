@@ -10,10 +10,18 @@ import { ChartContainer } from "@/components/ui/chart"
 import { RadialBarChart, RadialBar, PolarAngleAxis, BarChart, Bar, ResponsiveContainer, XAxis, Tooltip as RechartsTooltip } from "recharts"
 
 const SummaryCard = (props) => {
+
+    // Update Timestamp every minutes
+    const [tickTime, setTickTime] = useState(0)
+    useEffect(() => {
+        const interval = setInterval(() => setTickTime(t => t + 1), 60000)
+        return () => clearInterval(interval)
+    }, [])
+
     // Pot Overview Memo
-    const potOverViewData = useMemo(() => {
-        const online = props.potOnline ?? 0
-        const offline = props.potOffline ?? 0
+    const potOverviewData = useMemo(() => {
+        const online = props.potOverviewData?.onlineCount ?? 0
+        const offline = props.potOverviewData?.offlineCount ?? 0
         const percentage = Math.round(((online ?? 0) / ((online ?? 0) + (offline ?? 0) || 1)) * 100)
 
         return {
@@ -21,12 +29,12 @@ const SummaryCard = (props) => {
             potOffline: offline,
             percentageBar: percentage
         }
-    }, [props.potOnline, props.potOffline])
+    }, [props.potOverviewData])
 
     // Daily Anomaly Memo
     const dailyAnomalyData = useMemo(() => {
-        const current = props.dailyAnomalyCurrent ?? 0
-        const previous = props.dailyAnomalyPrevious ?? 0
+        const current = props.dailyAnomalyData?.current ?? 0
+        const previous = props.dailyAnomalyData?.previous ?? 0
         const growth = current - previous
 
         return {
@@ -57,11 +65,11 @@ const SummaryCard = (props) => {
                 }
             ],
         }
-    }, [props.dailyAnomalyCurrent, props.dailyAnomalyPrevious])
+    }, [props.dailyAnomalyData])
 
     const weeklyAnomalyData = useMemo(() => {
-        const current = props.weeklyAnomalyCurrent ?? 0
-        const previous = props.weeklyAnomalyPrevious ?? 0
+        const current = props.weeklyAnomalyData?.current ?? 0
+        const previous = props.weeklyAnomalyData?.previous ?? 0
         const growth = current - previous
 
         return {
@@ -92,7 +100,17 @@ const SummaryCard = (props) => {
                 }
             ],
         }
-    }, [props.weeklyAnomalyCurrent, props.weeklyAnomalyPrevious])
+    }, [props.weeklyAnomalyData])
+
+    const latestAnomalyData = useMemo(() => {
+        const location = props.latestAnomalyData?.potName ?? "-"
+        const time = props.latestAnomalyData?.timestamp ?? "-"
+
+        return {
+            latestLocation: location,
+            latestTime: time,
+        }
+    }, [props.latestAnomalyData, tickTime])
 
     return (
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-3">
@@ -104,7 +122,7 @@ const SummaryCard = (props) => {
                         <Flower2 size={16} className="text-success" />
                     </div>
                 </CardHeader>
-                <CardContent className="flex flex-row gap-4">
+                <CardContent className="flex flex-row gap-4 flex-1 items-center">
                     <div className="relative w-20 h-20 shrink-0">
                         <ChartContainer config={{}} className="w-full h-full">
                             <RadialBarChart
@@ -117,7 +135,7 @@ const SummaryCard = (props) => {
                                 startAngle={90}
                                 endAngle={-270}
                                 data={[{
-                                    value: potOverViewData.percentageBar,
+                                    value: potOverviewData.percentageBar,
                                     fill: "var(--success)"
                                 }]}
                             >
@@ -126,7 +144,7 @@ const SummaryCard = (props) => {
                             </RadialBarChart>
                         </ChartContainer>
                         <div className="absolute inset-0 flex flex-col items-center justify-center">
-                            <span className="text-sm font-semibold text-success">{potOverViewData.percentageBar}%</span>
+                            <span className="text-sm font-semibold text-success">{potOverviewData.percentageBar}%</span>
                         </div>
                     </div>
                     <Separator orientation="vertical" className="self-center" style={{ height: "80%" }} />
@@ -136,7 +154,7 @@ const SummaryCard = (props) => {
                                 <span className="w-2 h-2 rounded-full bg-success" />
                                 <span className="text-sm text-muted-foreground">Online</span>
                             </div>
-                            <span className="text-lg font-semibold">{potOverViewData.potOnline}</span>
+                            <span className="text-lg font-semibold">{potOverviewData.potOnline}</span>
                         </div>
 
                         <div className="flex items-center justify-between">
@@ -144,7 +162,7 @@ const SummaryCard = (props) => {
                                 <span className="w-2 h-2 rounded-full bg-danger" />
                                 <span className="text-sm text-muted-foreground">Offline</span>
                             </div>
-                            <span className="text-lg font-semibold">{potOverViewData.potOffline}</span>
+                            <span className="text-lg font-semibold">{potOverviewData.potOffline}</span>
                         </div>
                     </div>
                 </CardContent>
@@ -152,7 +170,7 @@ const SummaryCard = (props) => {
 
 
             {/* Daily Anomaly */}
-            <Card className="rounded-2xl border border-border shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 py-5 gap-5">
+            <Card className="rounded-2xl border border-border shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 py-5 gap-2">
                 <CardHeader className="flex justify-between items-center text-muted-foreground font-medium">
                     <span>Daily Anomaly</span>
                     <div className="p-2 rounded-xl bg-warning/15">
@@ -160,12 +178,10 @@ const SummaryCard = (props) => {
                     </div>
                 </CardHeader>
 
-                <CardContent className="flex flex-row gap-4">
-                    <div className="flex flex-col justify-center gap-2 flex-1 pr-3">
-                        <div className="flex flex-col justify-center gap-2 flex-1">
-                            <span className="text-lg font-semibold">{dailyAnomalyData.today}</span>
-                            {dailyAnomalyData.badgeGrowth}
-                        </div>
+                <CardContent className="flex flex-row gap-4 flex-1 items-center">
+                    <div className="flex flex-col justify-center gap-2 flex-1">
+                        <span className="text-lg font-semibold">{dailyAnomalyData.today}</span>
+                        {dailyAnomalyData.badgeGrowth}
                     </div>
                     <Separator orientation="vertical" className="self-center" style={{ height: "80%" }} />
                     <div className="w-16 h-16 shrink-0">
@@ -206,14 +222,14 @@ const SummaryCard = (props) => {
             </Card>
 
             {/* Weekly Anomaly */}
-            <Card className="rounded-2xl border border-border shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 py-5 gap-5">
+            <Card className="rounded-2xl border border-border shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 py-5 gap-2">
                 <CardHeader className="flex justify-between items-center text-muted-foreground font-medium">
                     <span>Weekly Anomaly</span>
                     <div className="p-2 rounded-xl bg-info/15">
                         <FileExclamationPoint size={16} className="text-info" />
                     </div>
                 </CardHeader>
-                <CardContent className="flex flex-row gap-4">
+                <CardContent className="flex flex-row gap-4 flex-1 items-center">
                     <div className="flex flex-col justify-center gap-2 flex-1">
                         <span className="text-lg font-semibold">{weeklyAnomalyData.today}</span>
                         {weeklyAnomalyData.badgeGrowth}
@@ -256,43 +272,50 @@ const SummaryCard = (props) => {
                 </CardContent>
             </Card>
 
-            {/* Latest Anomaly*/}
-            <Card className="rounded-2xl border border-border shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 py-5 gap-5">
+            {/* Latest Anomaly */}
+            <Card className="rounded-2xl border border-border shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200 py-5 gap-2">
                 <CardHeader className="flex justify-between items-center text-muted-foreground font-medium">
                     <span>Latest Anomaly</span>
-                    <div className="p-2 rounded-xl bg-info/15">
-                        <ClockAlert size={16} className="text-info" />
+                    <div className="p-2 rounded-xl bg-danger/15">
+                        <ClockAlert size={16} className="text-danger" />
                     </div>
                 </CardHeader>
-                <CardContent className="flex flex-col gap-3">
 
-                    <div className="flex items-center justify-between">
-                        <div className="flex gap-5 items-end">
-                            <div>
-                                <span className="text-xs text-muted-foreground">Location</span>
-                                <p className="text-sm font-semibold leading-tight">
-                                    {props.latestAnomalyData?.potName ?? "-"}
-                                </p>
-                            </div>
-                            <div className="h-8 w-px bg-border" />
-                            <div>
-                                <span className="text-xs text-muted-foreground">Time</span>
-                                <p className="text-sm font-semibold leading-tight">
-                                    {formatTimeStampFull(props.latestAnomalyData?.timestamp ?? "-")}
-                                </p>
-                            </div>
+                <CardContent className="flex flex-row gap-4 flex-1 items-center">
+                    <div className="flex flex-row gap-4 flex-1 items-center">
+                        <div className="flex flex-col">
+                            <span className="text-sm text-muted-foreground">Location</span>
+
+                            <span className="text-lg font-semibold">
+                                {latestAnomalyData.latestLocation ?? "-"}
+                            </span>
                         </div>
-                        <Tooltip>
-                            <TooltipTrigger asChild>
-                                <Button variant="outline" size="icon" className="shrink-0">
-                                    <ChevronRight size={16} />
-                                </Button>
-                            </TooltipTrigger>
-                            <TooltipContent>
-                                <span className="text-xs">View More</span>
-                            </TooltipContent>
-                        </Tooltip>
+
+                        <div className="w-px bg-border self-stretch" />
+
+                        <div className="flex flex-col">
+                            <span className="text-sm text-muted-foreground">Time</span>
+                            <span className="text-lg font-medium">
+                                {formatTimeStampFull(latestAnomalyData.latestTime ?? "-", tickTime)}
+                            </span>
+                        </div>
                     </div>
+
+                    <Tooltip>
+                        <TooltipTrigger asChild>
+                            <Button
+                                variant="outline"
+                                size="icon"
+                                className="shrink-0"
+                                onClick={() => alert("Feature will be available soon")}
+                            >
+                                <ChevronRight size={16} />
+                            </Button>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                            <span className="text-xs">View More</span>
+                        </TooltipContent>
+                    </Tooltip>
                 </CardContent>
             </Card>
         </div>
@@ -300,13 +323,10 @@ const SummaryCard = (props) => {
 }
 
 SummaryCard.propTypes = {
-    potOnline: PropTypes.any,
-    potOffline: PropTypes.any,
-    dailyAnomalyCurrent: PropTypes.any,
-    dailyAnomalyPrevious: PropTypes.any,
-    weeklyAnomalyCurrent: PropTypes.any,
-    weeklyAnomalyPrevious: PropTypes.any,
-
+    potOverviewData: PropTypes.any,
+    dailyAnomalyData: PropTypes.any,
+    weeklyAnomalyData: PropTypes.any,
+    latestAnomalyData: PropTypes.any,
 };
 
 export default SummaryCard
