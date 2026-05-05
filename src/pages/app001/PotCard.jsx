@@ -25,7 +25,6 @@ const PotCard = (props) => {
                 <BatteryMedium size={20} className="text-warning shrink-0" />
             </div>
         )
-        debugger
         if (level >= 70) return (
             <div className="rounded-lg bg-success/10 p-1.5">
                 <BatteryFull size={20} className="text-success shrink-0" />
@@ -82,7 +81,7 @@ const PotCard = (props) => {
 
                                 <CardContent className="flex flex-col gap-4 overflow-hidden">
                                     <div className="flex flex-col items-center gap-2">
-                                        <img src={potDashboard} className="h-35 w-30" />
+                                        <img src={potDashboard} className="h-40 w-35" />
                                         <span className="font-semibold text-base text-center truncate w-full">
                                             {pot.potName}
                                         </span>
@@ -151,8 +150,9 @@ const PotCard = (props) => {
                                     </div>
 
                                     <Button
+                                        size="lg"
                                         variant="outline"
-                                        className="w-full justify-between text-xs"
+                                        className="w-full justify-between"
                                         onClick={() => alert("Feature will be available soon")}
                                     >
                                         View Detail
