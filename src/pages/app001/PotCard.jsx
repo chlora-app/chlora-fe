@@ -81,7 +81,7 @@ const PotCard = (props) => {
 
                                 <CardContent className="flex flex-col gap-4 overflow-hidden">
                                     <div className="flex flex-col items-center gap-2">
-                                        <img src={potDashboard} className="h-40 w-35" />
+                                        <img src={potDashboard} className="h-35 w-30" />
                                         <span className="font-semibold text-base text-center truncate w-full">
                                             {pot.potName}
                                         </span>

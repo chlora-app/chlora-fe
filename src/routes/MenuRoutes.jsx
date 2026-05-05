@@ -25,6 +25,15 @@ const MenuRoutes = [
             { path: "/app004/master/devices", title: "Master Device", component: LazyLoadRoutes(() => import("../pages/app004/MasterDevice")) },
         ],
     },
+    {
+        title: "Analytics",
+        icon: ClipboardList,
+        section: "main",
+        sub: [
+            { path: "/app005/analytics/sensor", title: "Sensor Data", component: LazyLoadRoutes(() => import("../pages/app005/SensorData")) },
+            { path: "/app006/analytics/anomaly", title: "Anomalies", component: LazyLoadRoutes(() => import("../pages/app006/AnomalyData")) },
+        ],
+    },
     // {
     //     title: "Reports",
     //     icon: ClipboardList,
