@@ -1,31 +1,32 @@
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { Battery, BatteryFull, BatteryLow, BatteryMedium, ChevronLeft, ChevronRight, Circle, CircleOff, Clock, Droplet, SignalZero, Sprout, Thermometer } from "lucide-react"
+import { BatteryFull, BatteryLow, BatteryMedium, ChevronLeft, ChevronRight, Circle, Clock, Droplet, Sprout, Thermometer } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import potDashboard from "../../assets/images/potDashboard.webp"
 import PropTypes from "prop-types"
 import { Swiper, SwiperSlide } from "swiper/react"
-import { Pagination } from "swiper/modules"
+import { Pagination, Mousewheel } from "swiper/modules"
 import "swiper/css"
 import "swiper/css/pagination"
 import { useRef } from "react"
 import { formatTimeStampFull } from "@/components/common/Regex"
+import { ToasterCustom } from "@/components/common/ToasterCustom"
 
 const PotCard = (props) => {
     const potList = props.potData ?? []
     const swiperRef = useRef(null)
 
     const batteryIcon = (level) => {
-        if (level <= 10) return (
+        if (level <= 20) return (
             <div className="rounded-lg bg-danger/10 p-1.5">
                 <BatteryLow size={20} className="text-danger shrink-0" />
             </div>
         )
-        if (level <= 30) return (
+        if (level <= 50) return (
             <div className="rounded-lg bg-warning/10 p-1.5">
                 <BatteryMedium size={20} className="text-warning shrink-0" />
             </div>
         )
-        if (level >= 70) return (
+        return (
             <div className="rounded-lg bg-success/10 p-1.5">
                 <BatteryFull size={20} className="text-success shrink-0" />
             </div>
@@ -48,20 +49,26 @@ const PotCard = (props) => {
             </div>
 
             <Swiper
-                // modules={[Pagination]}
-                // pagination={{ clickable: true }}
                 onSwiper={(swiper) => (swiperRef.current = swiper)}
-                slidesPerView={1}
+                slidesPerView={1.1}
+                centeredSlides={true}
                 spaceBetween={16}
-                breakpoints={{ 768: { slidesPerView: 2 }, 1200: { slidesPerView: 3 } }}
+                breakpoints={{
+                    640: { slidesPerView: 1, centeredSlides: false },
+                    840: { slidesPerView: 2, centeredSlides: false },
+                    1280: { slidesPerView: 3, centeredSlides: false },
+                    1536: { slidesPerView: 4, centeredSlides: false },
+                }}
                 className="w-full swiper-cards-container"
+                style={{ alignItems: "stretch" }}
+                speed={500}
             >
                 {potList.map((pot) => {
                     const isMonitored = !!pot.lastUpdated
 
                     return (
-                        <SwiperSlide key={pot.potId}>
-                            <Card className="flex flex-col w-full rounded-2xl border border-border shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
+                        <SwiperSlide key={pot.potId} className="h-auto">
+                            <Card className="flex flex-col w-full h-full rounded-2xl border border-border shadow-sm hover:shadow-lg hover:-translate-y-0.5 transition-all duration-200">
                                 <CardHeader className="flex flex-row justify-between items-center">
                                     {isMonitored ? (
                                         <div className="flex flex-row items-center gap-1.5 text-muted-foreground">
@@ -79,85 +86,67 @@ const PotCard = (props) => {
                                     </div>
                                 </CardHeader>
 
-                                <CardContent className="flex flex-col gap-4 overflow-hidden">
-                                    <div className="flex flex-col items-center gap-2">
+                                <CardContent className="flex flex-col gap-4 flex-1 justify-between pb-4">
+
+                                    {/* Image + Name */}
+                                    <div className="flex flex-col items-center gap-3 py-4">
                                         <img src={potDashboard} className="h-35 w-30" />
-                                        <span className="font-semibold text-base text-center truncate w-full">
+                                        <span className="font-semibold text-base text-center truncate w-full px-2">
                                             {pot.potName}
                                         </span>
                                     </div>
 
-                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-
-                                        {/* Temperature */}
+                                    {/* Stats */}
+                                    <div className="grid grid-cols-2 gap-2">
                                         <div className="flex items-center gap-3 bg-muted/70 rounded-xl p-3 min-w-0">
                                             <div className="rounded-lg bg-warning/10 p-1.5">
                                                 <Thermometer size={20} className="text-warning" />
                                             </div>
                                             <div className="flex flex-col min-w-0">
-                                                <span className="text-sm font-semibold truncate">
-                                                    {pot.temperature}°C
-                                                </span>
-                                                <span className="text-xs text-muted-foreground truncate">
-                                                    Temperature
-                                                </span>
+                                                <span className="text-sm font-semibold truncate">{pot.temperature}°C</span>
+                                                <span className="text-xs text-muted-foreground truncate">Temperature</span>
                                             </div>
                                         </div>
 
-                                        {/* Humidity */}
                                         <div className="flex items-center gap-3 bg-muted/70 rounded-xl p-3 min-w-0">
                                             <div className="rounded-lg bg-info/10 p-1.5">
                                                 <Droplet size={20} className="text-info" />
                                             </div>
                                             <div className="flex flex-col min-w-0">
-                                                <span className="text-sm font-semibold truncate">
-                                                    {pot.humidity}%
-                                                </span>
-                                                <span className="text-xs text-muted-foreground truncate">
-                                                    Humidity
-                                                </span>
+                                                <span className="text-sm font-semibold truncate">{pot.humidity}%</span>
+                                                <span className="text-xs text-muted-foreground truncate">Humidity</span>
                                             </div>
                                         </div>
 
-                                        {/* Soil Moisture */}
                                         <div className="flex items-center gap-3 bg-muted/70 rounded-xl p-3 min-w-0">
                                             <div className="rounded-lg bg-success/10 p-1.5">
                                                 <Sprout size={20} className="text-success" />
                                             </div>
                                             <div className="flex flex-col min-w-0">
-                                                <span className="text-sm font-semibold truncate">
-                                                    {pot.soilMoisture}%
-                                                </span>
-                                                <span className="text-xs text-muted-foreground truncate">
-                                                    Soil Moisture
-                                                </span>
+                                                <span className="text-sm font-semibold truncate">{pot.soilMoisture}%</span>
+                                                <span className="text-xs text-muted-foreground truncate">Soil Moisture</span>
                                             </div>
                                         </div>
-
-                                        {/* Battery */}
                                         <div className="flex items-center gap-3 bg-muted/70 rounded-xl p-3 min-w-0">
                                             {batteryIcon(pot.battery)}
                                             <div className="flex flex-col min-w-0">
-                                                <span className="text-sm font-semibold truncate">
-                                                    {pot.battery}%
-                                                </span>
-                                                <span className="text-xs text-muted-foreground truncate">
-                                                    Battery
-                                                </span>
+                                                <span className="text-sm font-semibold truncate">{pot.battery}%</span>
+                                                <span className="text-xs text-muted-foreground truncate">Battery</span>
                                             </div>
                                         </div>
-
                                     </div>
 
+                                    {/* Button */}
                                     <Button
                                         size="lg"
                                         variant="outline"
                                         className="w-full justify-between"
-                                        onClick={() => alert("Feature will be available soon")}
+                                        onClick={() => ToasterCustom.warning("Feature will be available soon")}
                                     >
                                         View Detail
                                         <ChevronRight size={14} />
                                     </Button>
+
                                 </CardContent>
                             </Card>
                         </SwiperSlide>

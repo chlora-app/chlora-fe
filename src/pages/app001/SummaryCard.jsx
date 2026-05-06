@@ -8,6 +8,7 @@ import PropTypes from "prop-types";
 import { formatTimeStampFull } from "@/components/common/Regex";
 import { ChartContainer } from "@/components/ui/chart"
 import { RadialBarChart, RadialBar, PolarAngleAxis, BarChart, Bar, ResponsiveContainer, XAxis, Tooltip as RechartsTooltip } from "recharts"
+import { ToasterCustom } from "@/components/common/ToasterCustom";
 
 const SummaryCard = (props) => {
 
@@ -272,7 +273,7 @@ const SummaryCard = (props) => {
                     </div>
                 </CardHeader>
 
-                <CardContent className="flex flex-row gap-4 flex-1 items-center">
+                <CardContent className="flex flex-row flex-1 items-center overflow-hidden">
                     <div className="flex flex-row gap-4 flex-1 items-center">
                         <div className="flex flex-col">
                             <span className="text-sm text-muted-foreground">Location</span>
@@ -296,9 +297,9 @@ const SummaryCard = (props) => {
                         <TooltipTrigger asChild>
                             <Button
                                 variant="outline"
-                                size="icon"
+                                size="icon-sm"
                                 className="shrink-0"
-                                onClick={() => alert("Feature will be available soon")}
+                                onClick={() => ToasterCustom.warning("Feature will be available soon")}
                             >
                                 <ChevronRight size={16} />
                             </Button>
